@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
     <meta charset="UTF-8">
     <title>Dashboard Rena y Sebas</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -220,7 +219,9 @@
 <li><strong>😍</strong>: 192 veces</li>
 <li><strong>❤️</strong>: 68 veces</li>
 <li><strong>te quiero</strong>: 52 veces</li>
+<li><strong>le quiero</strong>: 48 veces</li>
 <li><strong>💖</strong>: 31 veces</li>
+<li><strong>le extraño</strong>: 7 veces</li>
 <li><strong>te extraño</strong>: 3 veces</li>
 
                 </ul>
@@ -229,8 +230,8 @@
                 <h2 class="section-title">“Te quiero” por persona</h2>
                 <p class="section-subtitle">Quién escribe más veces la frase “te quiero”.</p>
                 <ul>
-                    <li><strong>Sebas</strong>: 18 × “te quiero”</li>
-<li><strong>Rena</strong>: 34 × “te quiero”</li>
+                    <li><strong>Sebas</strong>: 62 × “te quiero”</li>
+<li><strong>Rena</strong>: 38 × “te quiero”</li>
 
                 </ul>
             </div>
@@ -241,12 +242,12 @@
                 <h2 class="section-title">Primer mensaje de amor</h2>
                 <p class="section-subtitle">El primer “te quiero” que quedó guardado en el chat.</p>
                 <p>
-                    <strong>Sebas</strong> escribió <em>te quiero</em> el 12/11/2025 10:49<br><small>“Te quiero mucho princesa ♥️  Muchos Besos 😘  Y  Muchos Abrazos 😘”</small>
+                    <strong>Sebas</strong> escribió <em>le quiero</em> el 12/11/2025 00:40<br><small>“Le quiero mucho ♥️  Mi princesa 😘, gracias por la velada siempre maravillosas pero la de hoy muy profunda”</small>
                 </p>
             </div>
             <div>
                 <h2 class="section-title">Tiempos de respuesta</h2>
-                <p class="section-subtitle">Promedio de tiempo en respondernos.</p>
+                <p class="section-subtitle">Promedio de cuánto se demoran en responderse.</p>
                 <ul>
                     <li><strong>Rena</strong> responde a <strong>Sebas</strong> en promedio en 118.3 min.</li><li><strong>Sebas</strong> responde a <strong>Rena</strong> en promedio en 121.6 min.</li>
                 </ul>
@@ -461,7 +462,7 @@ document.getElementById("sobre-corazon").addEventListener("click", function() {
         });
 
         // Nube de palabras
-        const wordsData = [{"word": "amor", "count": 397}, {"word": "guapo", "count": 245}, {"word": "todo", "count": 184}, {"word": "gracias", "count": 162}, {"word": "mucho", "count": 143}, {"word": "quiero", "count": 127}, {"word": "cómo", "count": 120}, {"word": "usted", "count": 112}, {"word": "princesa", "count": 112}, {"word": "hoy", "count": 111}, {"word": "día", "count": 109}, {"word": "vida", "count": 104}, {"word": "estoy", "count": 103}, {"word": "jajaj", "count": 89}, {"word": "mejor", "count": 79}, {"word": "mundo", "count": 76}, {"word": "alegro", "count": 74}, {"word": "días", "count": 72}, {"word": "espero", "count": 68}, {"word": "trabajo", "count": 62}, {"word": "así", "count": 61}, {"word": "mañana", "count": 61}, {"word": "buenos", "count": 61}, {"word": "voy", "count": 59}, {"word": "hermosa", "count": 54}, {"word": "tarde", "count": 52}, {"word": "igual", "count": 51}, {"word": "besos", "count": 50}, {"word": "muchos", "count": 49}, {"word": "abrazos", "count": 49}, {"word": "jejej", "count": 47}, {"word": "jejeje", "count": 46}, {"word": "imagino", "count": 46}, {"word": "nos", "count": 44}, {"word": "guapa", "count": 44}, {"word": "ahí", "count": 43}, {"word": "tengas", "count": 43}, {"word": "novia", "count": 43}, {"word": "ver", "count": 42}, {"word": "tengo", "count": 41}, {"word": "estás", "count": 40}, {"word": "ahora", "count": 40}, {"word": "tal", "count": 40}, {"word": "príncipe", "count": 37}, {"word": "sebas", "count": 36}, {"word": "genial", "count": 36}, {"word": "amaneció", "count": 35}, {"word": "respondo", "count": 34}, {"word": "súper", "count": 34}, {"word": "jajajaj", "count": 34}];
+        const wordsData = [{"word": "amor", "count": 397}, {"word": "guapo", "count": 245}, {"word": "todo", "count": 184}, {"word": "gracias", "count": 162}, {"word": "mucho", "count": 143}, {"word": "quiero", "count": 127}, {"word": "cómo", "count": 120}, {"word": "usted", "count": 112}, {"word": "princesa", "count": 112}, {"word": "hoy", "count": 111}, {"word": "día", "count": 109}, {"word": "vida", "count": 104}, {"word": "estoy", "count": 103}, {"word": "mejor", "count": 79}, {"word": "mundo", "count": 76}, {"word": "alegro", "count": 74}, {"word": "días", "count": 72}, {"word": "espero", "count": 68}, {"word": "trabajo", "count": 62}, {"word": "así", "count": 61}, {"word": "mañana", "count": 61}, {"word": "buenos", "count": 61}, {"word": "voy", "count": 59}, {"word": "hermosa", "count": 54}, {"word": "tarde", "count": 52}, {"word": "igual", "count": 51}, {"word": "besos", "count": 50}, {"word": "muchos", "count": 49}, {"word": "abrazos", "count": 49}, {"word": "imagino", "count": 46}, {"word": "nos", "count": 44}, {"word": "guapa", "count": 44}, {"word": "ahí", "count": 43}, {"word": "tengas", "count": 43}, {"word": "novia", "count": 43}, {"word": "ver", "count": 42}, {"word": "tengo", "count": 41}, {"word": "estás", "count": 40}, {"word": "ahora", "count": 40}, {"word": "tal", "count": 40}, {"word": "príncipe", "count": 37}, {"word": "genial", "count": 36}, {"word": "amaneció", "count": 35}, {"word": "respondo", "count": 34}, {"word": "súper", "count": 34}, {"word": "lindo", "count": 34}, {"word": "vaya", "count": 33}, {"word": "noche", "count": 32}, {"word": "rena", "count": 31}, {"word": "tiene", "count": 31}];
         (function() {
             const container = document.getElementById("wordcloud");
             const width = container.clientWidth;

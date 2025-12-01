@@ -1,0 +1,541 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Rena y Sebas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-cloud/build/d3.layout.cloud.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #ffe6f0, #e0f0ff);
+            margin: 0;
+            padding: 0;
+            color: #111827;
+        }
+        header {
+            text-align: center;
+            padding: 2rem 1rem 1rem 1rem;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+        }
+        header p {
+            margin: .5rem 0 0 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto 3rem auto;
+            padding: 0 1rem 2rem 1rem;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 14px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: .9rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #9b1c31;
+        }
+        .big {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: .4rem 0;
+        }
+        .card small {
+            color: #6b7280;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            margin: 2rem 0 0.5rem 0;
+        }
+        .section-subtitle {
+            margin: 0 0 1rem 0;
+            color: #4b5563;
+        }
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        .flex > div {
+            flex: 1 1 260px;
+        }
+        ul {
+            margin: .5rem 0 0 1.2rem;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 0.25rem;
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        canvas {
+            background: rgba(255,255,255,0.95);
+            border-radius: 14px;
+            padding: 1rem;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            margin-bottom: 1.5rem;
+        }
+        #wordcloud {
+            background: linear-gradient(135deg, #ffe6f0aa, #e3f2ffcc);
+    backdrop-filter: blur(6px);
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+        }
+    </style>
+</head>
+<body>
+    <header>
+     <h1>Rena & Sebas — Dashboard del Amor</h1>
+    <p>Una mirada dulce y curiosa a nuestra historia en WhatsApp.</p>
+</header>
+
+
+    <div class="container">
+        <section class="cards">
+            <div class="card">
+                <h2>Total de mensajes</h2>
+                <div class="big">2798</div>
+                <small>Cada mensaje es un pedacito de la historia.</small>
+            </div>
+            <div class="card">
+                <h2>Mensajes de Sebas</h2>
+                <div class="big">1625</div>
+                <small>Hablar mucho también es una forma de cuidar.</small>
+            </div>
+            <div class="card">
+                <h2>Mensajes de Rena</h2>
+                <div class="big">1173</div>
+                <small>Responder también es decir “estoy aquí”.</small>
+            </div>
+            <div class="card">
+                <h2>Desde cuándo se escriben</h2>
+                <div class="big" style="font-size:1.3rem;">02/10/2025 20:56</div>
+                <small>El primer “hola” que empezó todo.</small>
+            </div>
+            <div class="card">
+                <h2>Último mensaje</h2>
+                <div class="big" style="font-size:1.3rem;">01/12/2025 10:28</div>
+                <small>La historia aún se está escribiendo.</small>
+            </div>
+            <div class="card">
+                <h2>Día más intenso</h2>
+                <div class="big" style="font-size:1.3rem;">29/11/2025</div>
+                <small>Ese día se mandaron 139 mensajes.</small>
+            </div>
+            <div class="card">
+                <h2>Día de la semana más activo</h2>
+                <div class="big" style="font-size:1.3rem;">Sábado</div>
+                <small>Con 484 mensajes en total.</small>
+            </div>
+            <div class="card">
+                <h2>Racha más larga</h2>
+                <div class="big" style="font-size:1.1rem;">43 días seguidos, de 20/10/2025 a 01/12/2025.</div>
+            </div>
+            <div class="card">
+                <h2>Audios en total</h2>
+                <div class="big">731</div>
+                <small>La voz también cuenta como “mensaje”.</small>
+            </div>
+            <div class="card">
+                <h2>Audios por persona</h2>
+                <div class="big" style="font-size:1.1rem;">
+                    Sebas: 391<br>
+                    Rena: 340
+                </div>
+            </div>
+            <div class="card">
+                <h2>Fotos enviadas</h2>
+                <div class="big">181</div>
+            </div>
+            <div class="card">
+                <h2>Videos enviados</h2>
+                <div class="big">3</div>
+            </div>
+            <div class="card">
+                <h2>Noches de desvelo</h2>
+                <div class="big">331</div>
+                <small>Mensajes entre las 00:00 y las 05:59.</small>
+            </div>
+                        <div class="card">
+                <h2>Emojis de amor</h2>
+                <div class="big">1158</div>
+                <small>Corazones, caritas y besitos enviados 💕</small>
+            </div>
+
+            <div class="card">
+                <h2>Charlas de la noche</h2>
+                <div class="big">726</div>
+                <small>Mensajes entre las 22:00 y las 02:00 😏</small>
+            </div>
+
+            <div class="card">
+                <h2>Maratones de charla</h2>
+                <div class="big">39</div>
+                <small>Veces que hablaron sin parar durante más de 1 hora.</small>
+            </div>
+
+        </section>
+
+        <section>
+            <h2 class="section-title">Mensajes por mes</h2>
+            <p class="section-subtitle">Cómo ha ido creciendo (o estabilizándose) la conversación.</p>
+            <canvas id="mensajesMesChart" height="120"></canvas>
+        </section>
+
+        <section>
+            <h2 class="section-title">Mensajes por hora del día</h2>
+            <p class="section-subtitle">En qué horas del día más suelen hablar.</p>
+            <canvas id="mensajesHoraChart" height="120"></canvas>
+        </section>
+
+        <section class="flex">
+            <div>
+                <h2 class="section-title">Amorómetro</h2>
+                <p class="section-subtitle">Frases y emojis románticos que más se repiten.</p>
+                <ul>
+                    <li><strong>😘</strong>: 637 veces</li>
+<li><strong>amor</strong>: 421 veces</li>
+<li><strong>🥺</strong>: 230 veces</li>
+<li><strong>mi amor</strong>: 210 veces</li>
+<li><strong>😍</strong>: 192 veces</li>
+<li><strong>❤️</strong>: 68 veces</li>
+<li><strong>te quiero</strong>: 52 veces</li>
+<li><strong>💖</strong>: 31 veces</li>
+<li><strong>te extraño</strong>: 3 veces</li>
+
+                </ul>
+            </div>
+            <div>
+                <h2 class="section-title">“Te quiero” por persona</h2>
+                <p class="section-subtitle">Quién escribe más veces la frase “te quiero”.</p>
+                <ul>
+                    <li><strong>Sebas</strong>: 18 × “te quiero”</li>
+<li><strong>Rena</strong>: 34 × “te quiero”</li>
+
+                </ul>
+            </div>
+        </section>
+
+        <section class="flex">
+            <div>
+                <h2 class="section-title">Primer mensaje de amor</h2>
+                <p class="section-subtitle">El primer “te quiero” o “te amo” que quedó guardado en el chat.</p>
+                <p>
+                    <strong>Sebas</strong> escribió <em>te quiero</em> el 12/11/2025 10:49<br><small>“Te quiero mucho princesa ♥️  Muchos Besos 😘  Y  Muchos Abrazos 😘”</small>
+                </p>
+            </div>
+            <div>
+                <h2 class="section-title">Tiempos de respuesta</h2>
+                <p class="section-subtitle">Promedio de cuánto se demoran en responderse.</p>
+                <ul>
+                    <li><strong>Rena</strong> responde a <strong>Sebas</strong> en promedio en 118.3 min.</li><li><strong>Sebas</strong> responde a <strong>Rena</strong> en promedio en 121.6 min.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Nube de palabras</h2>
+            <p class="section-subtitle">Mientras más grande, más veces apareció en el chat.</p>
+            <div id="wordcloud" style="width:100%; height:400px;"></div>
+        </section>
+    </div>
+
+  
+
+<style>
+/* -------- CORAZÓN GARANTIZADO -------- */
+
+#sobre-wrapper {
+    max-width: 720px;
+    margin: 3rem auto;
+    text-align: center;
+}
+
+#sobre-texto {
+    margin-top: .6rem;
+    opacity: .65;
+    transition: opacity .4s ease;
+}
+
+/* CORAZÓN PERFECTO SVG */
+#sobre-corazon {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    cursor: pointer;
+
+    background: linear-gradient(135deg, #ff7a8b, #d11a2a);
+
+    clip-path: path("M75 135 L10 70 A35 35 0 1 1 75 35 A35 35 0 1 1 140 70 Z");
+
+    transition: transform .3s ease, opacity .4s ease;
+    filter: drop-shadow(0 8px 25px rgba(0,0,0,0.22));
+}
+
+#sobre-corazon:hover {
+    transform: translateY(-4px) scale(1.05);
+}
+
+/* -------- CARTA -------- */
+
+#carta {
+    max-width: 720px;
+    margin: 1.8rem auto 3rem auto;
+    display: none;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity .6s ease, transform .6s ease;
+
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.45);
+    box-shadow: 0 10px 35px rgba(0,0,0,.12);
+    padding: 2rem 1.5rem;
+}
+
+#carta h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 800;
+    color: #ff7a8b;
+}
+
+#carta-texto {
+    font-size: 1rem;
+    line-height: 1.7;
+    padding: 1.2rem;
+    background: rgba(255,255,255,0.55);
+    border-radius: 14px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    color: #374151;
+    white-space: pre-line;
+}
+</style>
+
+
+<section id="sobre-wrapper">
+
+    <!-- CORAZÓN -->
+    <div id="sobre-corazon"></div>
+
+    <p id="sobre-texto"></p>
+
+    <!-- CARTA -->
+    <div id="carta">
+        <h2>Carta para Rena</h2>
+
+        <p id="carta-texto">
+  Gracias por llegar a mi vida y hacer que cada día sea un poquito más bonito.
+Este es un detalle sencillo, pero está hecho con muchísimo cariño para ti.
+Gracias por todo lo que eres y por todo lo que aportas a mi mundo. Te quiero mucho, mi Rena, mi novia, mi todo.
+        </p>
+    </div>
+
+</section>
+
+
+<script>
+// CLICK: Desaparecer corazón + texto → mostrar carta
+document.getElementById("sobre-corazon").addEventListener("click", function() {
+
+    // Ocultar texto
+    const txt = document.getElementById("sobre-texto");
+    txt.style.opacity = 0;
+    setTimeout(() => txt.style.display = "none", 400);
+
+    // Ocultar corazón
+    const cora = document.getElementById("sobre-corazon");
+    cora.style.opacity = 0;
+    setTimeout(() => cora.style.display = "none", 400);
+
+    // Mostrar carta
+    setTimeout(() => {
+        const carta = document.getElementById("carta");
+        carta.style.display = "block";
+
+        setTimeout(() => {
+            carta.style.opacity = 1;
+            carta.style.transform = "translateY(0)";
+        }, 50);
+
+    }, 450);
+});
+</script>
+
+
+
+    <footer>
+    Creado por Sebas para Rena.  
+    <br>Porque cada mensaje tuyo merece un lugar bonito donde guardarse.
+</footer>
+
+
+    <script>
+        // Datos para mensajes por mes
+        const labelsMes = ["2025-10", "2025-11", "2025-12"];
+        const dataAuthor1 = [284, 1317, 24];
+        const dataAuthor2 = [209, 953, 11];
+
+        const ctxMes = document.getElementById('mensajesMesChart').getContext('2d');
+
+        new Chart(ctxMes, {
+            type: 'line',
+            data: {
+                labels: labelsMes,
+                datasets: [
+                    {
+                        label: 'Sebas',
+                        data: dataAuthor1,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Rena',
+                        data: dataAuthor2,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
+        });
+
+        // Datos para mensajes por hora
+        const labelsHora = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+        const dataHora = [168, 86, 23, 30, 10, 14, 123, 81, 75, 161, 132, 153, 220, 123, 82, 208, 153, 128, 131, 79, 23, 123, 233, 239];
+        const ctxHora = document.getElementById('mensajesHoraChart').getContext('2d');
+
+        new Chart(ctxHora, {
+            type: 'bar',
+            data: {
+                labels: labelsHora.map(h => h + ":00"),
+                datasets: [{
+                    label: 'Mensajes',
+                    data: dataHora,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
+        });
+
+        // Nube de palabras
+        const wordsData = [{"word": "amor", "count": 397}, {"word": "guapo", "count": 245}, {"word": "todo", "count": 184}, {"word": "gracias", "count": 162}, {"word": "mucho", "count": 143}, {"word": "quiero", "count": 127}, {"word": "cómo", "count": 120}, {"word": "usted", "count": 112}, {"word": "princesa", "count": 112}, {"word": "hoy", "count": 111}, {"word": "día", "count": 109}, {"word": "vida", "count": 104}, {"word": "estoy", "count": 103}, {"word": "jajaj", "count": 89}, {"word": "mejor", "count": 79}, {"word": "mundo", "count": 76}, {"word": "alegro", "count": 74}, {"word": "días", "count": 72}, {"word": "espero", "count": 68}, {"word": "trabajo", "count": 62}, {"word": "así", "count": 61}, {"word": "mañana", "count": 61}, {"word": "buenos", "count": 61}, {"word": "voy", "count": 59}, {"word": "hermosa", "count": 54}, {"word": "tarde", "count": 52}, {"word": "igual", "count": 51}, {"word": "besos", "count": 50}, {"word": "muchos", "count": 49}, {"word": "abrazos", "count": 49}, {"word": "jejej", "count": 47}, {"word": "jejeje", "count": 46}, {"word": "imagino", "count": 46}, {"word": "nos", "count": 44}, {"word": "guapa", "count": 44}, {"word": "ahí", "count": 43}, {"word": "tengas", "count": 43}, {"word": "novia", "count": 43}, {"word": "ver", "count": 42}, {"word": "tengo", "count": 41}, {"word": "estás", "count": 40}, {"word": "ahora", "count": 40}, {"word": "tal", "count": 40}, {"word": "príncipe", "count": 37}, {"word": "sebas", "count": 36}, {"word": "genial", "count": 36}, {"word": "amaneció", "count": 35}, {"word": "respondo", "count": 34}, {"word": "súper", "count": 34}, {"word": "jajajaj", "count": 34}];
+        (function() {
+            const container = document.getElementById("wordcloud");
+            const width = container.clientWidth;
+            const height = 400;
+
+            if (!wordsData || wordsData.length === 0) return;
+
+            const maxCount = Math.max.apply(null, wordsData.map(d => d.count));
+
+            const layout = d3.layout.cloud()
+                .size([width, height])
+                .words(wordsData.map(d => ({
+                    text: d.word,
+                    count: d.count,
+                    size: 14 + (d.count / maxCount) * 30
+                })))
+                .padding(4)
+                .rotate(() => 0)
+                .font("Arial")
+                .fontSize(d => d.size)
+                .on("end", draw);
+
+            layout.start();
+
+            function draw(words) {
+                const svg = d3.select("#wordcloud")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+
+                const group = svg.append("g")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+                group.selectAll("text")
+                    .data(words)
+                    .enter().append("text")
+                    .style("font-size", d => d.size + "px")
+                    .style("fill", d => {
+                            const max = Math.max(...words.map(w => w.count));
+                            const intensity = d.count / max;
+                            // De rosa suave a rojo fuerte
+                            return d3.interpolateRgb("#fbb6ce", "#9b1c31")(intensity);
+                        })
+                    .attr("text-anchor", "middle")
+                    .attr("transform", d => "translate(" + [d.x, d.y] + ")")
+                    .text(d => d.text)
+                    .on("mouseover", function(event, d) {
+                        let tooltip = document.getElementById("tooltip");
+                        if (!tooltip) {
+                            tooltip = document.createElement("div");
+                            tooltip.id = "tooltip";
+                            tooltip.style.position = "fixed";
+                            tooltip.style.background = "white";
+                            tooltip.style.border = "1px solid #aaa";
+                            tooltip.style.padding = "6px";
+                            tooltip.style.borderRadius = "6px";
+                            tooltip.style.boxShadow = "0 2px 5px rgba(0,0,0,.2)";
+                            tooltip.style.fontSize = "0.85rem";
+                            document.body.appendChild(tooltip);
+                        }
+                        tooltip.innerText = d.text + ": " + d.count + " veces";
+                        tooltip.style.display = "block";
+                    })
+                    .on("mousemove", function(event) {
+                        const tooltip = document.getElementById("tooltip");
+                        if (!tooltip) return;
+                        tooltip.style.left = (event.pageX + 10) + "px";
+                        tooltip.style.top = (event.pageY + 10) + "px";
+                    })
+                    .on("mouseout", function() {
+                        const tooltip = document.getElementById("tooltip");
+                        if (tooltip) tooltip.style.display = "none";
+                    });
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,1433 +1,1873 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
     <meta charset="UTF-8">
-    <title>Dashboard Rena y Sebas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia - Rena & Sebas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c41e3a'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3-cloud/build/d3.layout.cloud.js"></script>
     <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #ffe6f0, #e0f0ff);
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --accent-red: #c41e3a;
+            --accent-red-light: #e63950;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #888888;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --shadow-soft: 0 2px 20px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            color: #111827;
-        }
-        header {
-            text-align: center;
-            padding: 2rem 1rem 1rem 1rem;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.4rem;
-        }
-        header p {
-            margin: .5rem 0 0 0;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto 3rem auto;
-            padding: 0 1rem 2rem 1rem;
-        }
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 1.1rem;
-            margin-bottom: 2.4rem;
         }
 
-        .card {
-            position: relative;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.82);
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
-            padding: 1.3rem 1.4rem 1.1rem;
-            backdrop-filter: blur(10px);
-            transition: transform .18s ease, box-shadow .18s ease;
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* degradado suave tipo “marco” como el header */
-        .card::before {
-            content: "";
-            position: absolute;
+        body {
+            font-family: 'Source Sans 3', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        /* ========== SPLASH ========== */
+        #splash {
+            position: fixed;
             inset: 0;
-            background: radial-gradient(circle at top left, rgba(248, 113, 150, 0.26), transparent 55%),
-                        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.18), transparent 55%);
-            opacity: 0.8;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        #splash.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-heart {
+            width: 100px;
+            height: 100px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .splash-heart svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--accent-red);
+            filter: drop-shadow(0 4px 12px rgba(196, 30, 58, 0.3));
+        }
+
+        .splash-text {
+            margin-top: 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            opacity: 0;
+            animation: fadeUp 1s ease 0.5s forwards;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, var(--bg-primary) 70%);
             pointer-events: none;
         }
 
-        /* mini línea decorativa arriba */
-        .card::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 18px;
-            right: 18px;
-            height: 3px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #fbb6ce, #9b1c31);
-            opacity: 0.7;
-        }
-
-        /* contenido por encima del degradado */
-        .card > * {
+        .hero-content {
             position: relative;
             z-index: 1;
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 22px 55px rgba(15, 23, 42, 0.22);
+        .hero-names {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
         }
 
-        .card h2 {
-            margin: 0 0 .35rem 0;
-            font-size: .8rem;
-            text-transform: uppercase;
-            letter-spacing: .16em;
-            color: #9b1c31;
-            opacity: 0.92;
+        .hero-heart {
+            display: inline-block;
+            margin-left: 0.5rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
         }
 
-        .big {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: .2rem 0 .4rem;
+        .hero-heart svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--accent-red);
         }
 
-        .card small {
-            color: #6b7280;
-            font-size: .85rem;
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
         }
-        .section-title {
+
+        .hero-subtitle {
+            font-family: 'Playfair Display', serif;
             font-size: 1.4rem;
-            margin: 2rem 0 0.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+            max-width: 400px;
+            margin: 0 auto;
         }
-        .section-subtitle {
-            margin: 0 0 1rem 0;
-            color: #4b5563;
-        }
-        .flex {
+
+        .hero-meta {
             display: flex;
-            flex-wrap: wrap;
             gap: 2rem;
+            justify-content: center;
+            margin-top: 3rem;
+            flex-wrap: wrap;
         }
-        .flex > div {
-            flex: 1 1 260px;
+
+        .hero-meta-item {
+            text-align: center;
         }
-        ul {
-            margin: .5rem 0 0 1.2rem;
-            padding: 0;
+
+        .hero-meta-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-red);
         }
-        li {
+
+        .hero-meta-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-muted);
+            fill: none;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* ========== SECTIONS ========== */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* ========== TIMELINE JOURNEY ========== */
+        .timeline-section {
+            padding: 4rem 2rem;
+            background: var(--bg-secondary);
+        }
+
+        .timeline-journey {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .timeline-path {
+            position: absolute;
+            left: 50%;
+            top: 25px;
+            bottom: 25px;
+            width: 3px;
+            background: linear-gradient(180deg, 
+                var(--accent-red) 0%, 
+                rgba(196, 30, 58, 0.2) 100%);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 2.5rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: timelineReveal 0.6s ease forwards;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes timelineReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-item-left {
+            justify-content: flex-start;
+            padding-right: calc(50% + 35px);
+        }
+
+        .timeline-item-right {
+            justify-content: flex-end;
+            padding-left: calc(50% + 35px);
+        }
+
+        .timeline-emoji-badge {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-red), #e85a71);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.3);
+            z-index: 10;
+            transition: all 0.3s ease;
+            border: 3px solid var(--bg-secondary);
+        }
+
+        .timeline-item:hover .timeline-emoji-badge {
+            transform: translate(-50%, -50%) scale(1.15);
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.4);
+        }
+
+        .timeline-content-card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            max-width: 320px;
+        }
+
+        .timeline-content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(196, 30, 58, 0.12);
+            border-color: rgba(196, 30, 58, 0.15);
+        }
+
+        .timeline-date-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 0.25rem;
         }
-        footer {
-            text-align: center;
-            padding: 1.5rem 1rem;
-            font-size: 0.8rem;
-            color: #6b7280;
+
+        .timeline-title-card {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
         }
-        canvas {
-            background: rgba(255,255,255,0.95);
-            border-radius: 14px;
-            padding: 1rem;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+
+        @media (max-width: 768px) {
+            .timeline-path {
+                left: 25px;
+            }
+
+            .timeline-item-left,
+            .timeline-item-right {
+                padding-right: 0;
+                padding-left: 60px;
+                justify-content: flex-start;
+            }
+
+            .timeline-emoji-badge {
+                left: 25px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+
+            .timeline-content-card {
+                max-width: 100%;
+            }
+        }
+
+        /* ========== COUPLE COUNTER ========== */
+        .counter-section {
+            background: var(--bg-secondary);
+            padding: 6rem 2rem;
+        }
+
+        .counter-grid {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .counter-card {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            min-width: 280px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .counter-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .counter-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .counter-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* ========== SPOTIFY ========== */
+        .spotify-section {
+            padding: 4rem 2rem 6rem;
+            background: var(--bg-secondary);
+        }
+
+        .spotify-container {
+            max-width: 700px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: var(--bg-primary);
+        }
+
+        .spotify-container iframe {
+            display: block;
+        }
+
+        /* ========== PHOTO SECTION ========== */
+        .photo-section {
+            padding: 4rem 2rem;
+        }
+
+        .photo-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .photo-frame {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            background: var(--bg-primary);
+        }
+
+        .photo-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .photo-placeholder {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .photo-placeholder svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .photo-placeholder p {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .photo-hint {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* ========== WORDS ELEGANT ========== */
+        .words-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .words-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .word-tag {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-secondary);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            background: var(--bg-primary);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .word-tag:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(196, 30, 58, 0.15);
+        }
+
+        .word-tag.size-1 { font-size: 0.9rem; }
+        .word-tag.size-2 { font-size: 1.1rem; }
+        .word-tag.size-3 { font-size: 1.3rem; }
+        .word-tag.size-4 { font-size: 1.5rem; font-weight: 500; }
+        .word-tag.size-5 { font-size: 1.8rem; font-weight: 600; color: var(--text-primary); }
+
+        .word-tag.color-red {
+            background: rgba(196, 30, 58, 0.08);
+            border-color: rgba(196, 30, 58, 0.2);
+            color: #c41e3a;
+        }
+        .word-tag.color-red:hover {
+            border-color: #c41e3a;
+            color: #c41e3a;
+        }
+
+        .word-tag.color-dark {
+            background: rgba(26, 26, 26, 0.05);
+            border-color: rgba(26, 26, 26, 0.15);
+            color: #4a4a4a;
+        }
+        .word-tag.color-dark:hover {
+            border-color: #4a4a4a;
+            color: #4a4a4a;
+        }
+
+        .word-tag.color-pink {
+            background: rgba(230, 57, 80, 0.08);
+            border-color: rgba(230, 57, 80, 0.2);
+            color: #e63950;
+        }
+        .word-tag.color-pink:hover {
+            border-color: #e63950;
+            color: #e63950;
+        }
+
+        .word-tag.color-rose {
+            background: rgba(180, 30, 60, 0.06);
+            border-color: rgba(180, 30, 60, 0.15);
+            color: #8b1a3a;
+        }
+        .word-tag.color-rose:hover {
+            border-color: #8b1a3a;
+            color: #8b1a3a;
+        }
+
+        /* ========== WORDS LIST ========== */
+        .words-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .word-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-primary);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+        }
+
+        .word-row:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .word-rank {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            opacity: 0.5;
+            min-width: 30px;
+        }
+
+        .word-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .word-bar-container {
+            width: 120px;
+            height: 6px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .word-bar {
+            height: 100%;
+            background: var(--accent-red);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .word-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(odd) {
+                flex-direction: row;
+                padding-left: 50px;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+        }
+
+        /* ========== METRICS ========== */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .metrics-elegant .metric-card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .metrics-elegant .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(196, 30, 58, 0.1);
+            border-color: rgba(196, 30, 58, 0.15);
+        }
+
+        .metrics-elegant .metric-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .metrics-elegant .metric-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            line-height: 1.2;
+        }
+
+        .metrics-elegant .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ========== EMOTIONS SECTION ========== */
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .emotion-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(10px);
+        }
+
+        .emotion-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(196, 30, 58, 0.2);
+        }
+
+        .emotion-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .emotion-quote .moment-author {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .emotion-quote .moment-date {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .emotion-quote .moment-quote {
+            display: block;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* ========== CHART SECTION ========== */
+        .charts-section {
+            background: var(--bg-secondary);
+            padding: 6rem 2rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(196, 30, 58, 0.1);
+        }
+
+        .chart-container h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-primary);
             margin-bottom: 1.5rem;
         }
 
+        .chart-canvas-wrapper {
+            position: relative;
+            height: 250px;
+        }
 
-/* ========================= */
-/*      SPLASH COMPLETO      */
-/* ========================= */
+        .heatmap-container {
+            display: grid;
+            grid-template-columns: auto repeat(24, 1fr);
+            gap: 3px;
+            font-size: 0.7rem;
+        }
 
-#splash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999999;      /* Asegura que quede encima de todo */
-    opacity: 1;
-    transition: opacity 0.6s ease;
-}
+        .heatmap-label {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+        }
 
-/* Contenedor vertical para el corazón y el texto */
-.splash-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            background: rgba(196, 30, 58, 0.1);
+            transition: all 0.2s ease;
+        }
 
-/* ========================= */
-/*       CORAZÓN SVG         */
-/* ========================= */
+        .heatmap-cell:hover {
+            transform: scale(1.2);
+            background: var(--accent-red);
+        }
 
-#heart {
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, #ff7a8b, #d11a2a);
-    position: relative;
-    transform: rotate(-45deg);
-    animation: heartbeat 1.1s infinite ease-in-out;
-}
+        .heatmap-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
 
-/* partes superiores del corazón */
-#heart::before,
-#heart::after {
-    content: "";
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, #ff7a8b, #d11a2a);
-    border-radius: 50%;
-    position: absolute;
-}
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
 
-#heart::before {
-    top: -60px;
-    left: 0;
-}
+        .heatmap-legend span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
 
-#heart::after {
-    top: 0;
-    left: 60px;
-}
+        .legend-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
 
-/* animación del latido */
-@keyframes heartbeat {
-    0%   { transform: rotate(-45deg) scale(1); }
-    25%  { transform: rotate(-45deg) scale(1.15); }
-    40%  { transform: rotate(-45deg) scale(1); }
-    60%  { transform: rotate(-45deg) scale(1.12); }
-    100% { transform: rotate(-45deg) scale(1); }
-}
+        /* ========== AMOROMETRO ========== */
+        .amorometro-section {
+            background: var(--bg-primary);
+            padding: 6rem 2rem;
+        }
 
-/* ========================= */
-/*         TEXTO             */
-/* ========================= */
+        .amorometro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-#splash-text {
-    margin-top: 22px;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #d11a2a; /* mismo rojo del corazón */
-    opacity: 0;
-    animation: fadeIn 1s ease-out forwards;
-}
+        .amorometro-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
+        .amorometro-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(196, 30, 58, 0.1);
+        }
 
+        .amorometro-emoji {
+            min-width: 50px;
+            text-align: center;
+        }
 
+        .amorometro-icon-only {
+            font-size: 1.6rem;
+        }
 
-        #wordcloud {
-            background: linear-gradient(135deg, #ffe6f0aa, #e3f2ffcc);
-    backdrop-filter: blur(6px);
-            border-radius: 14px;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-            
+        .amorometro-content {
+            flex: 1;
+        }
+
+        .amorometro-word {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .amorometro-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .amorometro-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-red), #e63950);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .amorometro-count {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            min-width: 70px;
+            text-align: right;
+        }
+
+        /* ========== FIRST MOMENTS ========== */
+        .first-moments-section {
+            background: var(--bg-secondary);
+            padding: 6rem 2rem;
+        }
+
+        .first-moments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .first-moment-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(196, 30, 58, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .first-moment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(196, 30, 58, 0.15);
+        }
+
+        .first-moment-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .first-moment-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .first-moment-author {
+            font-size: 1.1rem;
+            color: var(--accent-red);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .first-moment-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .first-moment-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ========== WORDS ========== */
+        .words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .word-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .word-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent-red);
+        }
+
+        .word-card-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .word-card-rank {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            opacity: 0.6;
+            min-width: 30px;
+        }
+
+        .word-card-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .word-card-count {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .word-card-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-red);
+            border-radius: 0 0 0 var(--radius);
+            transition: width 0.5s ease;
+        }
+
+        .word-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ========== LETTER ========== */
+        .letter-section {
+            background: var(--bg-secondary);
+            padding: 6rem 2rem;
+        }
+
+        .letter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .letter-heart-btn {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        .letter-heart-btn svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--accent-red);
+            filter: drop-shadow(0 4px 15px rgba(196, 30, 58, 0.25));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .letter-heart-btn:hover {
+            animation: none;
+            transform: scale(1.1);
+        }
+
+        .letter-heart-btn:hover svg {
+            filter: drop-shadow(0 8px 25px rgba(196, 30, 58, 0.4));
+        }
+
+        .letter-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-style: italic;
+        }
+
+        .letter-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .letter-content.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .letter-paper {
+            background: #ffffff;
+            border-radius: var(--radius);
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            position: relative;
+            text-align: left;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .letter-paper::before {
+            content: '';
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+            border-radius: 2px;
+        }
+
+        .letter-greeting {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--accent-red);
+            margin-bottom: 2rem;
+        }
+
+        .letter-text {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: var(--text-secondary);
+            white-space: pre-line;
+        }
+
+        .letter-signature {
+            margin-top: 2.5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .letter-close {
+            display: block;
+            margin: 2rem auto 0;
+            background: none;
+            border: none;
+            color: var(--accent-red);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .letter-close:hover {
+            opacity: 1;
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer .heart-icon {
+            display: inline-block;
+            margin: 0 0.25rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        footer .heart-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--accent-red);
+            vertical-align: middle;
+        }
+
+        .footer-names {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            :root {
+                --radius: 8px;
+            }
+
+            section {
+                padding: 3rem 1.5rem;
+            }
+
+            .section-header {
+                margin-bottom: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .section-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .hero-names {
+                font-size: clamp(2.5rem, 10vw, 4rem);
+            }
+
+            .hero-heart svg {
+                width: 36px;
+                height: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+                padding: 0 1rem;
+            }
+
+            .hero-meta {
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+
+            .hero-meta-value {
+                font-size: 1.4rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .metric-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .metric-value {
+                font-size: 1.8rem;
+            }
+
+            .metric-label {
+                font-size: 0.75rem;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                padding: 1.5rem;
+            }
+
+            .chart-canvas-wrapper {
+                height: 200px;
+            }
+
+            .heatmap-container {
+                font-size: 0.6rem;
+                overflow-x: auto;
+            }
+
+            .heatmap-cell {
+                min-width: 8px;
+            }
+
+            .photo-container {
+                padding: 0 1rem;
+            }
+
+            .photo-frame {
+                border-radius: 12px;
+            }
+
+            .letter-paper {
+                padding: 1.5rem;
+            }
+
+            .letter-greeting {
+                font-size: 1.4rem;
+            }
+
+            .letter-text {
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+
+            .spotify-container {
+                border-radius: 8px;
+            }
+
+            .words-cloud {
+                gap: 0.75rem 1rem;
+                padding: 1rem 0;
+            }
+
+            .word-tag {
+                padding: 0.4rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .counter-grid {
+                gap: 2rem;
+            }
+
+            .counter-number {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
-    <link rel="icon" href="data:image/svg+xml,
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-<text y='0.9em' font-size='90'>❤️</text>
-</svg>">
-
 </head>
 <body>
-       <div id="splash">
-    <div class="splash-content">
-        <div id="heart"></div>
-        <div id="splash-text">Rena & Sebas</div>
-    </div>
-</div>
-
-
-    <header class="hero">
-    <div class="hero-inner">
-        <div class="hero-pill">
-            <span>Dashboard de amor</span>
-        </div>
-
-        <div class="hero-title-row">
-            <h1 class="hero-names">Rena &amp; Sebas</h1>
-            <span class="hero-heart">❤️</span>
-        </div>
-
-        <p class="hero-subtitle">
-            Una mirada dulce y curiosa a nuestra historia en WhatsApp.
-        </p>
-
-        <div class="hero-meta">
-            <span>WhatsApp</span>
-            <span class="hero-dot">•</span>
-            <span>Desde 02/10/2025 20:56 hasta 03/04/2026 18:21</span>
-        </div>
-    </div>
-</header>
-
-
-
-    <div class="container">
-        <section class="cards">
-            <div class="card">
-                <h2>Total de mensajes</h2>
-                <div class="big">16031</div>
-                <small>Cada mensaje es un pedacito de la historia.</small>
-            </div>
-            <div class="card">
-                <h2>Mensajes de Sebas</h2>
-                <div class="big">9558</div>
-                <small>Hablar mucho también es una forma de cuidar.</small>
-            </div>
-            <div class="card">
-                <h2>Mensajes de Rena</h2>
-                <div class="big">6473</div>
-                <small>Responder también es decir “estoy aquí”.</small>
-            </div>
-            <div class="card">
-                <h2>Desde cuándo se escriben</h2>
-                <div class="big" style="font-size:1.3rem;">02/10/2025 20:56</div>
-                <small>El primer “hola” que empezó todo.</small>
-            </div>
-            <div class="card">
-                <h2>Último mensaje</h2>
-                <div class="big" style="font-size:1.3rem;">03/04/2026 18:21</div>
-                <small>La historia aún se está escribiendo.</small>
-            </div>
-            <div class="card">
-                <h2>Día más intenso</h2>
-                <div class="big" style="font-size:1.3rem;">16/02/2026</div>
-                <small>Ese día se mandaron 261 mensajes.</small>
-            </div>
-            <div class="card">
-                <h2>Día de la semana más activo</h2>
-                <div class="big" style="font-size:1.3rem;">Sábado</div>
-                <small>Con 2459 mensajes en total.</small>
-            </div>
-            <div class="card">
-                <h2>Racha más larga</h2>
-                <div class="big" style="font-size:1.1rem;">166 días seguidos, de 20/10/2025 a 03/04/2026.</div>
-            </div>
-            <div class="card">
-                <h2>Audios en total</h2>
-                <div class="big">3336</div>
-                <small>La voz también cuenta como “mensaje”.</small>
-            </div>
-            <div class="card">
-                <h2>Audios por persona</h2>
-                <div class="big" style="font-size:1.1rem;">
-                    Sebas: 1389<br>
-                    Rena: 1947
-                </div>
-            </div>
-            <div class="card">
-                <h2>Fotos enviadas</h2>
-                <div class="big">1205</div>
-            </div>
-            <div class="card">
-                <h2>Videos enviados</h2>
-                <div class="big">37</div>
-            </div>
-            <div class="card">
-                <h2>Noches de desvelo</h2>
-                <div class="big">1262</div>
-                <small>Mensajes entre las 00:00 y las 05:59.</small>
-            </div>
-                        <div class="card">
-                <h2>Emojis de amor</h2>
-                <div class="big">8306</div>
-                <small>Corazones, caritas y besitos enviados 💕</small>
-            </div>
-
-            <div class="card">
-                <h2>Charlas de la noche</h2>
-                <div class="big">3315</div>
-                <small>Mensajes entre las 22:00 y las 02:00 😏</small>
-            </div>
-
-            <div class="card">
-                <h2>Maratones de charla</h2>
-                <div class="big">311</div>
-                <small>Veces que hablaron sin parar durante más de 1 hora.</small>
-            </div>
-
-        </section>
-
-                <!-- ============================ -->
-        <!--   SECCIONES DE AMOR / GRÁFICOS -->
-        <!-- ============================ -->
-
-        <section>
-            <h2 class="section-title">Nuestra historia mes a mes</h2>
-            <p class="section-subtitle">
-                Mensajes enviados cada mes desde que empezó nuestro chat.
-            </p>
-            <canvas id="mensajesMesChart" height="120"></canvas>
-        </section>
-
-      
-
-        <section class="flex">
-            <div>
-                <h2 class="section-title">Amorómetro</h2>
-                <p class="section-subtitle">
-                    Palabras y emojis que más usan cuando se ponen cursis.
-                </p>
-                <ul>
-                    <li><strong>😘</strong>: 5113 veces</li>
-<li><strong>amor</strong>: 3930 veces</li>
-<li><strong>😍</strong>: 1415 veces</li>
-<li><strong>mi amor</strong>: 1124 veces</li>
-<li><strong>te amo</strong>: 1079 veces</li>
-<li><strong>🥺</strong>: 865 veces</li>
-<li><strong>❤️</strong>: 801 veces</li>
-<li><strong>💖</strong>: 111 veces</li>
-<li><strong>le amo</strong>: 101 veces</li>
-<li><strong>te extraño</strong>: 63 veces</li>
-<li><strong>te quiero</strong>: 61 veces</li>
-<li><strong>le quiero</strong>: 54 veces</li>
-
-                </ul>
-            </div>
-
-            <div>
-                <h2 class="section-title">Quién dice más “te quiero”</h2>
-                <p class="section-subtitle">
-                    Conteo de los “te quiero” que ha enviado cada uno en el chat.
-                </p>
-                <ul>
-                    <li><strong>Sebas</strong>: 70 × “te quiero”</li>
-<li><strong>Rena</strong>: 45 × “te quiero”</li>
-
-                </ul>
-            </div>
-
-            <div>
-                <h2 class="section-title">Quién dice más “te amo”</h2>
-                <p class="section-subtitle">
-                    Cuántos “te amo” ha dicho cada uno.
-                </p>
-                <ul>
-                    <li><strong>Sebas</strong>: 845 × “te amo”</li>
-<li><strong>Rena</strong>: 335 × “te amo”</li>
-
-                </ul>
-            </div>
-        </section>
-
-        <section class="flex">
-            <div>
-                <h2 class="section-title">Nuestro primer “te quiero”</h2>
-                <p class="section-subtitle">
-                    El primer “te quiero” que quedó guardado en el chat.
-                </p>
-                <p>
-                    <strong>Sebas</strong> escribió <em>le quiero</em> el 12/11/2025 00:40<br><small>“Le quiero mucho ♥️  Mi princesa 😘, gracias por la velada siempre maravillosas pero la de hoy muy profunda”</small>
-                </p>
-            </div>
-
-            <div>
-                <h2 class="section-title">Cuánto nos demoramos en responder</h2>
-                <p class="section-subtitle">
-                    Promedio de tiempo que se toma cada uno en contestar los mensajes.
-                </p>
-                <ul>
-                    <li><strong>Sebas</strong> responde a <strong>Rena</strong> en promedio en 48.5 min.</li><li><strong>Rena</strong> responde a <strong>Sebas</strong> en promedio en 37.3 min.</li>
-                </ul>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="section-title">Nuestro primer “te amo”</h2>
-            <p class="section-subtitle">
-                El primer “te amo” que apareció en el chat ❤️
-            </p>
-            <p>
-                <strong>Rena</strong> escribió <em>te amo</em> el 04/12/2025 01:54<br><small>“Te amo mi amor ♥️♥️”</small>
-            </p>
-        </section>
-
-          <section>
-            <h2 class="section-title">¿A qué hora hablamos más?</h2>
-            <p class="section-subtitle">
-                Distribución de mensajes según la hora del día. Ideal para saber si son más de madrugada o de mañanita.
-            </p>
-            <canvas id="mensajesHoraChart" height="120"></canvas>
-        </section>
-
-  
-<style>
-:root {
-    --bg-gradient-from: #ffe6f0;
-    --bg-gradient-to:   #e0f0ff;
-    --card-bg:          rgba(255,255,255,0.95);
-    --card-radius:      14px;
-    --shadow-soft:      0 12px 30px rgba(15, 23, 42, 0.12);
-    --primary:          #9b1c31;
-    --primary-soft:     #fbb6ce;
-    --text-main:        #111827;
-    --text-muted:       #6b7280;
-    --border-subtle:    rgba(255,255,255,0.55);
-}
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, var(--bg-gradient-from), var(--bg-gradient-to));
-    color: var(--text-main);
-}
-
-/* HEADER */
-
-/* ===== HERO DEL TÍTULO ===== */
-
-header.hero {
-    display: flex;
-    justify-content: center;
-    padding: 2.8rem 1.4rem 1.8rem;
-}
-
-.hero-inner {
-    max-width: 820px;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.78);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 22px 55px rgba(15, 23, 42, 0.22);
-    padding: 1.7rem 1.9rem 1.6rem;
-    text-align: left;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Detalle decorativo arriba */
-
-.hero-inner::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top left, rgba(248, 113, 150, 0.28), transparent 55%),
-                radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.22), transparent 55%);
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.hero-inner > * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Pastilla "Dashboard del amor" */
-
-.hero-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
-    background: rgba(248, 250, 252, 0.95);
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: #9b1c31;
-    margin-bottom: 0.9rem;
-}
-
-/* Fila del título */
-
-.hero-title-row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.55rem 0.9rem;
-}
-
-.hero-names {
-    margin: 0;
-    font-size: clamp(2.2rem, 4.8vw, 2.9rem);
-    font-weight: 800;
-    color: #111827;
-}
-
-.hero-heart {
-    font-size: 1.9rem;
-    filter: drop-shadow(0 7px 18px rgba(220, 38, 38, 0.6));
-    transform-origin: center;
-    animation: heroBeat 1.3s infinite ease-in-out;
-}
-
-/* Subtítulo */
-
-.hero-subtitle {
-    margin: 0.4rem 0 0.2rem;
-    font-size: 0.98rem;
-    color: #4b5563;
-}
-
-/* Metadatos (WhatsApp, fechas) */
-
-.hero-meta {
-    margin-top: 0.55rem;
-    font-size: 0.82rem;
-    color: #9ca3af;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem 0.6rem;
-    align-items: center;
-}
-
-.hero-dot {
-    opacity: 0.6;
-}
-
-/* Animación corazón */
-
-@keyframes heroBeat {
-    0%   { transform: scale(1); }
-    25%  { transform: scale(1.15); }
-    40%  { transform: scale(1); }
-    60%  { transform: scale(1.12); }
-    100% { transform: scale(1); }
-}
-
-/* Responsive */
-
-@media (max-width: 768px) {
-    header.hero {
-        padding: 2.2rem 1rem 1.6rem;
-    }
-
-    .hero-inner {
-        padding: 1.4rem 1.2rem 1.4rem;
-        text-align: center;
-    }
-
-    .hero-title-row {
-        justify-content: center;
-    }
-
-    .hero-meta {
-        justify-content: center;
-    }
-}
-
-
-/* LAYOUT GENERAL */
-
-.container {
-    max-width: 1100px;
-    margin: 0 auto 3rem auto;
-    padding: 0 1.25rem 2.5rem;
-}
-
-/* CARDS */
-
-.cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-}
-
-.card {
-    background: var(--card-bg);
-    border-radius: var(--card-radius);
-    padding: 1.2rem 1.4rem;
-    box-shadow: var(--shadow-soft);
-    transition: transform .15s ease, box-shadow .15s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 40px rgba(15,23,42,0.16);
-}
-
-.card h2 {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin: 0 0 .6rem 0;
-    padding: 0.25rem 0.95rem 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: #9b1c31;
-    background: rgba(248, 250, 252, 0.95);
-    border-radius: 999px;
-    border: 1px solid rgba(248, 113, 150, 0.4);
-    box-shadow: 0 6px 14px rgba(248, 113, 150, 0.25);
-}
-
-/* bolita decorativa antes del título */
-.card h2::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: radial-gradient(circle at 30% 30%, #fee2e2, #fb7185);
-    box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.22);
-}
-
-/* un poco más compacto en móvil */
-@media (max-width: 768px) {
-    .card h2 {
-        padding: 0.22rem 0.8rem 0.22rem 0.65rem;
-        font-size: 0.7rem;
-        letter-spacing: 0.14em;
-        margin-bottom: 0.5rem;
-    }
-}
-
-
-.big {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: .4rem 0;
-}
-
-.card small {
-    color: var(--text-muted);
-}
-
-/* SECCIONES Y TITULOS */
-
-.section-title {
-    font-size: 1.4rem;
-    margin: 2rem 0 0.4rem 0;
-}
-
-.section-subtitle {
-    margin: 0 0 1rem 0;
-    color: var(--text-muted);
-}
-
-/* FLEX LAYOUT */
-
-.flex {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.flex > div {
-    flex: 1 1 260px;
-}
-
-/* LISTAS */
-
-ul {
-    margin: .5rem 0 0 1.2rem;
-    padding: 0;
-}
-
-li {
-    margin-bottom: 0.25rem;
-}
-
-/* GRAFICOS */
-
-canvas {
-    background: var(--card-bg);
-    border-radius: var(--card-radius);
-    padding: 1rem;
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 1.5rem;
-}
-
-/* WORDCLOUD */
-
-#wordcloud {
-    background: linear-gradient(135deg, #ffe6f0aa, #e3f2ffcc);
-    backdrop-filter: blur(6px);
-    border-radius: var(--card-radius);
-    box-shadow: var(--shadow-soft);
-    width: 100%;
-    height: 400px;
-}
-
-/* FOOTER */
-
-footer {
-    text-align: center;
-    padding: 1.8rem 1rem 2.2rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    
-}
-
-.footer-rys {
-    margin-top: 0.9rem;
-    display: flex;
-    justify-content: center;
-}
-
-.rys-logo {
-    display: block;
-    filter: drop-shadow(0 8px 20px rgba(15, 23, 42, 0.25));
-}
-
-/* estilo de las letras dentro del SVG */
-.rys-logo text {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    fill: white;
-}
-
-/* corazón del centro */
-.rys-heart {
-    fill: #fef2f2;
-    stroke: #fee2e2;
-    stroke-width: 1;
-}
-
-
-/* ========= SPLASH ========= */
-
-#splash {
-    position: fixed;
-    inset: 0;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999999;
-    opacity: 1;
-    transition: opacity 0.6s ease;
-}
-
-.splash-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#heart {
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, #ff7a8b, #d11a2a);
-    position: relative;
-    transform: rotate(-45deg);
-    animation: heartbeat 1.1s infinite ease-in-out;
-}
-
-#heart::before,
-#heart::after {
-    content: "";
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, #ff7a8b, #d11a2a);
-    border-radius: 50%;
-    position: absolute;
-}
-
-#heart::before {
-    top: -60px;
-    left: 0;
-}
-
-#heart::after {
-    top: 0;
-    left: 60px;
-}
-
-@keyframes heartbeat {
-    0%   { transform: rotate(-45deg) scale(1); }
-    25%  { transform: rotate(-45deg) scale(1.15); }
-    40%  { transform: rotate(-45deg) scale(1); }
-    60%  { transform: rotate(-45deg) scale(1.12); }
-    100% { transform: rotate(-45deg) scale(1); }
-}
-
-#splash-text {
-    margin-top: 22px;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #d11a2a;
-    opacity: 0;
-    animation: fadeIn 1s ease-out forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-
-/* ========= CORAZÓN / CARTA ========= */
-
-#carta-section {
-    margin-top: 2.5rem;
-}
-
-#sobre-wrapper {
-    max-width: 720px;
-    margin: 0 auto 1.5rem auto;
-    text-align: center;
-}
-
-#sobre-texto {
-    margin-top: .4rem;
-    opacity: .7;
-    transition: opacity .4s ease, transform .3s ease;
-}
-
-/* Corazón (se queda igual, solo afinado) */
-
-#sobre-corazon {
-    margin: 1.5rem auto 0;
-    width: 150px;
-    height: 150px;
-    border: none;
-    padding: 0;
-    background: linear-gradient(135deg, #ff7a8b, #d11a2a);
-    cursor: pointer;
-    clip-path: path("M75 135 L10 70 A35 35 0 1 1 75 35 A35 35 0 1 1 140 70 Z");
-    transition: transform .25s ease, opacity .3s ease, box-shadow .25s ease;
-    filter: drop-shadow(0 8px 25px rgba(0,0,0,0.22));
-}
-
-#sobre-corazon:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.28);
-}
-
-#sobre-corazon:active {
-    transform: translateY(0) scale(0.98);
-}
-
-#sobre-corazon:focus-visible {
-    outline: 3px solid #fbb6ce;
-    outline-offset: 6px;
-}
-
-/* Contenedor de la carta (debajo del corazón) */
-
-#carta {
-    max-width: 720px;
-    margin: 1.2rem auto 3rem auto;
-    display: none;               /* se activa con JS */
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity .45s ease, transform .45s ease;
-}
-
-/* Estado visible (clase que pone JS) */
-
-#carta.carta-visible {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Hoja de la carta */
-
-.carta-paper {
-    background: linear-gradient(180deg, #fdfdfd, #f9fafb);
-    border-radius: 18px;
-    border: 1px solid rgba(209, 213, 219, 0.8);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
-    padding: 1.4rem 1.4rem 1.2rem;
-    position: relative;
-}
-
-/* pequeña línea decorativa arriba */
-
-.carta-paper::before {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 18px;
-    right: 18px;
-    height: 2px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #fecaca, #f9a8d4);
-    opacity: 0.9;
-}
-
-.carta-saludo,
-.carta-firma,
-#carta-texto {
-    position: relative;
-    z-index: 1;
-}
-
-.carta-saludo {
-    margin: 0 0 0.6rem 0;
-    font-weight: 600;
-    color: #9b1c31;
-}
-
-#carta-texto {
-    font-size: 0.98rem;
-    line-height: 1.7;
-    color: #374151;
-    white-space: pre-line;
-    margin: 0;
-}
-
-.carta-firma {
-    margin-top: 1.1rem;
-    font-size: 0.95rem;
-    color: #6b7280;
-}
-
-/* Botón de cerrar carta */
-
-.carta-close-text {
-    margin-top: 0.8rem;
-    border: none;
-    background: transparent;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    cursor: pointer;
-    color: #9b1c31;
-    padding: 0;
-    opacity: 0.8;
-}
-
-.carta-close-text:hover {
-    opacity: 1;
-}
-
-/* Responsive */
-
-@media (max-width: 768px) {
-    #sobre-corazon {
-        width: 130px;
-        height: 130px;
-    }
-
-    #carta {
-        margin: 1rem 0.4rem 2.5rem;
-    }
-
-    .carta-paper {
-        padding: 1.2rem 1.1rem 1.1rem;
-    }
-}
-
-
-/* Responsive */
-
-@media (max-width: 768px) {
-    #sobre-corazon {
-        width: 130px;
-        height: 130px;
-    }
-
-    #carta {
-        margin: 1.6rem 0.4rem 0;
-        padding: 1.3rem 1rem 1.4rem;
-    }
-
-    #carta-texto {
-        max-height: 230px;
-    }
-}
-
-/* ========= RESPONSIVE ========= */
-
-@media (max-width: 768px) {
-    header {
-        padding-top: 2rem;
-    }
-
-    .section-title {
-        margin-top: 1.6rem;
-        font-size: 1.25rem;
-    }
-
-    canvas {
-        padding: .7rem;
-    }
-
-    #wordcloud {
-        height: 320px;
-    }
-
-    #carta {
-        margin: 1.5rem 1rem 2.5rem;
-    }
-}
-</style>
-
-
-<section id="carta-section">
-    <div id="sobre-wrapper">
-        <h2 class="section-title">Una carta para Rena</h2>
-        <p class="section-subtitle" id="sobre-texto">
-            Toca el corazón cuando estés lista para leer tu carta 💌
-        </p>
-
-        <button id="sobre-corazon" aria-label="Abrir carta para Rena"></button>
-    </div>
-
-    <div id="carta" aria-hidden="true">
-        <div class="carta-paper">
-            <p class="carta-saludo">Querida Rena,</p>
-
-            <p id="carta-texto">
-No sé en qué momento todo empezó a sentirse diferente, pero desde que llegaste, algo en mí cambió para bien. Mi mundo se volvió más tranquilo, más bonito, más lleno de sentido… y todo eso tiene tu nombre.
-
-A veces me quedo pensando en lo afortunado que soy de tenerte, porque no solo eres mi novia, eres ese lugar donde encuentro paz, donde puedo ser yo sin miedo y donde todo se siente correcto. Tu forma de ser, de querer, de entender… todo en ti suma a mi vida de una manera que no puedo explicar del todo, pero que siento profundamente.
-
-No necesito grandes momentos para saber que soy feliz contigo. Me basta con una conversación contigo, con una risa, con tu compañía en silencio… porque incluso en lo simple, contigo todo se vuelve especial.
-
-Quiero que sepas que te amo de verdad, con todo lo que soy. Amo tu esencia, tu forma de ver la vida y la manera en la que haces que todo sea más fácil y más bonito para mí.
-
-Renata Valentina, gracias por estar, por quedarte, por elegirme cada día. Eres una parte fundamental de mi vida, y sinceramente, no la imagino sin ti.
-            </p>
-
-            <p class="carta-firma">
-                Con amor,<br>
-                Sebas
-            </p>
-
-            <button id="cerrar-carta" class="carta-close-text" type="button">
-                Cerrar carta
-            </button>
-        </div>
-    </div>
-</section>
-
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const heart = document.getElementById("sobre-corazon");
-    const carta = document.getElementById("carta");
-    const cerrar = document.getElementById("cerrar-carta");
-    const texto = document.getElementById("sobre-texto");
-
-    if (!heart || !carta) return;
-
-    function abrirCarta() {
-        // Oculta el corazón con animación
-        heart.style.opacity = "0";
-        heart.style.transform = "translateY(-8px) scale(0.9)";
-        texto.style.opacity = "0.4";
-        texto.textContent = "Gracias por leerla ✨";
-
-        setTimeout(() => {
-            heart.style.display = "none";
-        }, 260);
-
-        // Muestra la carta
-        carta.style.display = "block";
-        requestAnimationFrame(() => {
-            carta.classList.add("carta-visible");
-        });
-
-        carta.setAttribute("aria-hidden", "false");
-    }
-
-    function cerrarCarta() {
-        // Vuelve a mostrar el corazón
-        heart.style.display = "block";
-        requestAnimationFrame(() => {
-            heart.style.opacity = "1";
-            heart.style.transform = "translateY(0) scale(1)";
-        });
-
-        texto.style.opacity = "0.7";
-        texto.textContent = "Toca el corazón cuando estés lista para leer tu carta 💌";
-
-        // Oculta la carta
-        carta.classList.remove("carta-visible");
-        carta.setAttribute("aria-hidden", "true");
-        setTimeout(() => {
-            carta.style.display = "none";
-        }, 260);
-    }
-
-    heart.addEventListener("click", abrirCarta);
-    heart.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            abrirCarta();
-        }
-    });
-
-    if (cerrar) {
-        cerrar.addEventListener("click", cerrarCarta);
-    }
-});
-</script>
-
-
-
-
-    <footer>
-        <div>
-            Creado por Sebas para Rena.  
-            <br>Porque cada mensaje tuyo merece un lugar bonito donde guardarse.
-        </div>
-
-        <div class="footer-rys">
-            <svg class="rys-logo" width="140" height="48" viewBox="0 0 140 48" xmlns="http://www.w3.org/2000/svg" aria-label="R y S unidos">
-                <defs>
-                    <linearGradient id="rysBg" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#f9a8d4"/>
-                        <stop offset="100%" stop-color="#ec4899"/>
-                    </linearGradient>
-                </defs>
-
-                <!-- pastilla de fondo -->
-                <rect x="1" y="1" width="138" height="46" rx="23" fill="url(#rysBg)" />
-
-                <!-- borde suave -->
-                <rect x="1" y="1" width="138" height="46" rx="23"
-                      fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
-
-                <!-- letras R y S -->
-                <text x="38" y="30" text-anchor="middle">R</text>
-                <text x="102" y="30" text-anchor="middle">S</text>
-
-                <!-- corazoncito delante de la y -->
-                <path d="M67 22
-                         C 65 19, 61 19, 60 22
-                         C 59 25, 62 28, 67 31
-                         C 72 28, 75 25, 74 22
-                         C 73 19, 69 19, 67 22 Z"
-                      class="rys-heart" />
+    <!-- SPLASH -->
+    <div id="splash">
+        <div class="splash-heart">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
         </div>
+        <div class="splash-text">Rena & Sebas</div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-names">
+                Rena <span class="hero-heart">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </span> Sebas
+            </h1>
+            <p class="hero-subtitle">
+                Cada mensaje es una página de nuestra historia
+            </p>
+            <div class="hero-meta">
+                <div class="hero-meta-item">
+                    <div class="hero-meta-value">16031</div>
+                    <div class="hero-meta-label">mensajes</div>
+                </div>
+                <div class="hero-meta-item">
+                    <div class="hero-meta-value">183</div>
+                    <div class="hero-meta-label">días juntos</div>
+                </div>
+                <div class="hero-meta-item">
+                    <div class="hero-meta-value">87.6</div>
+                    <div class="hero-meta-label">promedio diario</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="timeline-section">
+        <div class="section-header">
+            <h2 class="section-title">Nuestra Línea de Tiempo</h2>
+            <p class="section-subtitle">Los momentos que marcaron nuestra historia</p>
+        </div>
+        <div class="timeline-journey">
+            <div class="timeline-path"></div>
+            <div id="timeline"></div>
+        </div>
+    </section>
+
+    <!-- FIRST MOMENTS -->
+    <section class="first-moments-section">
+        <div class="section-header">
+            <h2 class="section-title">Los Primeros "Te Quiero" y "Te Amo"</h2>
+            <p class="section-subtitle">Los momentos que marcaron el inicio de nuestro amor</p>
+        </div>
+        <div class="first-moments-grid">
+            <div class="first-moment-card">
+                <div class="first-moment-icon">💌</div>
+                <h3 class="first-moment-title">El Primero "Te Quiero"</h3>
+                <p class="first-moment-author">Sebas</p>
+                <p class="first-moment-date">12 de Noviembre de 2025</p>
+                <p class="first-moment-quote">"Le quiero mucho ♥️
+
+Mi princesa 😘, gracias por la velada siempre maravillosas pero la de hoy muy pro"</p>
+            </div>
+            <div class="first-moment-card">
+                <div class="first-moment-icon">❤️</div>
+                <h3 class="first-moment-title">El Primero "Te Amo"</h3>
+                <p class="first-moment-author">Rena</p>
+                <p class="first-moment-date">4 de Diciembre de 2025</p>
+                <p class="first-moment-quote">"Te amo mi amor ♥️♥️"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORDS -->
+    <section class="words-section">
+        <div class="section-header">
+            <h2 class="section-title">Palabras que Nos Definen</h2>
+            <p class="section-subtitle">Lo que nuestro corazón repite cada día</p>
+        </div>
+        <div class="words-cloud" id="wordsCloud"></div>
+    </section>
+
+    <!-- METRICS -->
+    <section>
+        <div class="section-header">
+            <h2 class="section-title">La Historia en Números</h2>
+            <p class="section-subtitle">Lo que nuestros mensajes cuentan</p>
+        </div>
+        <div class="metrics-grid metrics-elegant">
+            <div class="metric-card fade-in">
+                <div class="metric-icon">🎙️</div>
+                <div class="metric-value">3336</div>
+                <div class="metric-label">audios compartidos</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">📸</div>
+                <div class="metric-value">1205</div>
+                <div class="metric-label">fotos enviadas</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">🎬</div>
+                <div class="metric-value">37</div>
+                <div class="metric-label">videos enviados</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">🔥</div>
+                <div class="metric-value">261</div>
+                <div class="metric-label">día más intenso</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">💫</div>
+                <div class="metric-value">166</div>
+                <div class="metric-label">días de racha</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">💌</div>
+                <div class="metric-value">6473</div>
+                <div class="metric-label">mensajes de Rena</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">💙</div>
+                <div class="metric-value">9558</div>
+                <div class="metric-label">mensajes de Sebas</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">🌙</div>
+                <div class="metric-value">1262</div>
+                <div class="metric-label">noches de desvelo</div>
+            </div>
+            <div class="metric-card fade-in">
+                <div class="metric-icon">❤️</div>
+                <div class="metric-value">1968</div>
+                <div class="metric-label">te amos dichos</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section class="charts-section">
+        <div class="section-header">
+            <h2 class="section-title">Nuestra Conversación en el Tiempo</h2>
+            <p class="section-subtitle">Cómo ha evolucionado nuestro dialogo</p>
+        </div>
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div class="chart-container" style="margin-bottom: 2rem;">
+                <h3>Mensajes por Mes</h3>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>Cuando Hablamos Más</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Días de la semana vs horas del día</p>
+                <div class="heatmap-header">
+                    <div class="heatmap-legend">
+                        <span>Menos</span>
+                        <div class="legend-cell" style="background: rgba(196, 30, 58, 0.1);"></div>
+                        <div class="legend-cell" style="background: rgba(196, 30, 58, 0.3);"></div>
+                        <div class="legend-cell" style="background: rgba(196, 30, 58, 0.6);"></div>
+                        <div class="legend-cell" style="background: var(--accent-red);"></div>
+                        <span>Más</span>
+                    </div>
+                </div>
+                <div class="heatmap-container" id="heatmapContainer"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHOTO SECTION -->
+    <section class="photo-section">
+        <div class="section-header">
+            <h2 class="section-title">Nuestro Momento</h2>
+            <p class="section-subtitle">Un recuerdo para siempre</p>
+        </div>
+        <div class="photo-container">
+            <div class="photo-frame">
+                <img src="foto.jpeg" alt="Nuestra foto" class="photo-img" id="couplePhoto">
+            </div>
+        </div>
+    </section>
+
+    <!-- SPOTIFY -->
+    <section class="spotify-section" style="background: var(--bg-secondary);">
+        <div class="section-header">
+            <h2 class="section-title">Nuestra Playlist</h2>
+            <p class="section-subtitle">Las canciones que nos representan</p>
+        </div>
+        <div class="spotify-container">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/1Buc0aQIDrNMYuBVy4DpwK?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- REGALO SECTION -->
+    <section style="background: var(--bg-primary); padding: 6rem 2rem;">
+        <div class="section-header">
+            <h2 class="section-title">El Origen de Esta Historia</h2>
+            <p class="section-subtitle">Un regalo hecho con amor</p>
+        </div>
+        <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+            <p style="font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 2; color: var(--text-secondary); margin-bottom: 2rem;">
+                Este dashboard comenzó siendo un simple regalo: un intento de mostrar en datos lo que siento cada día. 
+                Cada mensaje, cada risa, cada "buenos días" y cada "buenas noches"... todo quedó guardado aquí.
+            </p>
+            <p style="font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 2; color: var(--text-secondary); margin-bottom: 2rem;">
+                Lo hice porque quería que supieras cuánto significas para mí. No en palabras vacías, sino en números reales. 
+                16,000 mensajes. 183 días. Y cada uno de ellos, el mejor de mi vida.
+            </p>
+            <p style="font-family: 'Playfair Display', serif; font-size: 1.3rem; font-style: italic; color: var(--accent-red); margin-bottom: 2rem;">
+                "Detrás de cada número hay un momento nuestro, una risa, una palabra, un te quiero."
+            </p>
+            <a href="ds.html" style="display: inline-block; padding: 1rem 2rem; background: var(--accent-red); color: white; text-decoration: none; border-radius: 50px; font-family: 'Playfair Display', serif; font-size: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(196, 30, 58, 0.3);">
+                Ver la primera versión que te hice
+            </a>
+        </div>
+    </section>
+
+    <!-- LETTER -->
+    <section class="letter-section">
+        <div class="section-header">
+            <h2 class="section-title">Una Carta Para Ti</h2>
+            <p class="section-subtitle">Hecha con todo mi corazón</p>
+        </div>
+        <div class="letter-container">
+            <button class="letter-heart-btn" id="letterBtn" aria-label="Abrir carta">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+            <p class="letter-hint">Toca el corazón para leer una carta especial</p>
+            <div class="letter-content" id="letterContent">
+                <div class="letter-paper">
+                    <p class="letter-greeting">Para ti, mi amor,</p>
+                    <p class="letter-text">
+No sé exactamente cuándo todo cambió, pero sé que cambió. Llegaste a mi vida como llegan las cosas importantes: sin aviso, sin ruido, pero con una fuerza que me transformó por completo.
+
+Cada conversación contigo es un regalo. Desde las risas más simples hasta los silencios que no necesitan llenarse, contigo todo tiene sentido.
+
+Gracias por quedarte, por elegirme, por cada "buenos días" y cada "buenas noches". Gracias por tu forma de ser, por tu risa, por tu manera de ver el mundo.
+
+Eres mi lugar favorito. Y aunque esto sea solo un dashboard con números, detrás de cada número hay un momento nuestro, una risa, una palabra, un te quiero.
+
+Te amo. Hoy, mañana, y en todos los mensajes que faltan por venir.
+                    </p>
+                    <p class="letter-signature">Con todo mi amor,<br>Sebas</p>
+                    <button class="letter-close" id="letterClose">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Hecho con <span class="heart-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </span></p>
+        <p class="footer-names">Con amor, Rena & Sebas</p>
     </footer>
 
-
-
     <script>
-        // Datos para mensajes por mes
-        const labelsMes = ["2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"];
-        const dataAuthor1 = [276, 1244, 1522, 1949, 1977, 2374, 216];
-        const dataAuthor2 = [210, 916, 999, 1337, 1342, 1571, 98];
+        // Timeline data
+        const timelineData = [{"type": "milestone", "date": "2025-09-27T00:00:00", "title": "Primera vez que nos vimos", "emoji": "&#x1F440;"}, {"type": "start", "date": "2025-10-02T20:56:06", "title": "Primer mensaje", "emoji": "&#x1F4AC;"}, {"type": "milestone", "date": "2025-10-27T00:00:00", "title": "Primera cita", "emoji": "&#x1F495;"}, {"type": "milestone", "date": "2025-11-04T00:00:00", "title": "Primer beso", "emoji": "&#x1F618;"}, {"type": "milestone", "date": "2025-11-13T00:00:00", "title": "Nos hicimos novios", "emoji": "&#x1F46A;"}];
+        
+        function renderTimeline() {
+            const container = document.getElementById('timeline');
+            if (!container || !timelineData || timelineData.length === 0) return;
 
-        const ctxMes = document.getElementById('mensajesMesChart').getContext('2d');
+            const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-        new Chart(ctxMes, {
-            type: 'line',
-            data: {
-                labels: labelsMes,
-                datasets: [
-                    {
-                        label: 'Sebas',
-                        data: dataAuthor1,
-                        tension: 0.3,
-                        borderWidth: 2,
-                        pointRadius: 3
-                    },
-                    {
-                        label: 'Rena',
-                        data: dataAuthor2,
-                        tension: 0.3,
-                        borderWidth: 2,
-                        pointRadius: 3
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: true },
-                    tooltip: { mode: 'index', intersect: false }
-                },
-                scales: {
-                    y: { beginAtZero: true, ticks: { precision: 0 } }
+            timelineData.forEach((moment, index) => {
+                const item = document.createElement('div');
+                item.className = index % 2 === 0 ? 'timeline-item timeline-item-left' : 'timeline-item timeline-item-right';
+                
+                const badge = document.createElement('div');
+                badge.className = 'timeline-emoji-badge';
+                badge.innerHTML = moment.emoji;
+
+                const card = document.createElement('div');
+                card.className = 'timeline-content-card';
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'timeline-date-badge';
+                const date = new Date(moment.date);
+                dateDiv.textContent = `${date.getDate()} ${months[date.getMonth()]} '${date.getFullYear().toString().slice(-2)}`;
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'timeline-title-card';
+                titleDiv.textContent = moment.title;
+
+                card.appendChild(dateDiv);
+                card.appendChild(titleDiv);
+                item.appendChild(card);
+                item.appendChild(badge);
+                container.appendChild(item);
+            });
+        }
+
+        // Words cloud
+        const wordsData = [{"word": "amor", "count": 3243}, {"word": "vida", "count": 1985}, {"word": "amo", "count": 1168}, {"word": "mucho", "count": 1101}, {"word": "guapo", "count": 446}, {"word": "amorcito", "count": 420}, {"word": "mejor", "count": 343}, {"word": "trabajo", "count": 280}, {"word": "espero", "count": 274}, {"word": "días", "count": 273}, {"word": "día", "count": 269}, {"word": "buenos", "count": 244}, {"word": "guapa", "count": 239}, {"word": "alegro", "count": 235}, {"word": "corazón", "count": 235}, {"word": "mundo", "count": 233}, {"word": "mujer", "count": 221}, {"word": "vaya", "count": 220}, {"word": "novia", "count": 214}, {"word": "nos", "count": 207}, {"word": "estás", "count": 202}, {"word": "mío", "count": 185}, {"word": "amaneció", "count": 177}, {"word": "princesa", "count": 152}, {"word": "preciosa", "count": 150}];
+        const loveWordsData = {"🥺": 450, "😘": 2770, "😍": 557, "💖": 70, "le quiero": 54, "te quiero": 59, "❤️": 460, "mi amor": 847, "te amo": 1040, "le amo": 81, "💕": 1};
+        
+        function renderAmorometro() {
+            const container = document.getElementById('amorometroGrid');
+            if (!container || !loveWordsData) return;
+
+            const sortedWords = Object.entries(loveWordsData)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 12);
+
+            const maxCount = sortedWords[0] ? sortedWords[0][1] : 1;
+
+            sortedWords.forEach(([word, count]) => {
+                const item = document.createElement('div');
+                item.className = 'amorometro-item';
+
+                const isEmoji = /[\u{1F300}-\u{1F9FF}]/u.test(word);
+                let displayIcon, displayWord;
+                
+                if (isEmoji) {
+                    displayIcon = `<span class="amorometro-icon-only">${word}</span>`;
+                    displayWord = word;
+                } else {
+                    const wordEmojis = {
+                        'amor': '💕',
+                        'te amo': '❤️',
+                        'le amo': '❤️‍🔥',
+                        'te quiero': '💗',
+                        'le quiero': '💗',
+                        'mi amor': '💖',
+                        'te extraño': '🥺'
+                    };
+                    displayIcon = `<span class="amorometro-icon-only">${wordEmojis[word.toLowerCase()] || '✨'}</span>`;
+                    displayWord = word;
                 }
-            }
-        });
+                
+                item.innerHTML = `
+                    <div class="amorometro-emoji">${displayIcon}</div>
+                    <div class="amorometro-content">
+                        <div class="amorometro-word">${displayWord}</div>
+                        <div class="amorometro-bar-container">
+                            <div class="amorometro-bar" style="width: ${(count / maxCount) * 100}%"></div>
+                        </div>
+                    </div>
+                    <div class="amorometro-count">${count}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        function renderWordsCloud() {
+            const container = document.getElementById('wordsCloud');
+            if (!container || !wordsData || wordsData.length === 0) return;
 
-        // Datos para mensajes por hora
-        const labelsHora = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-        const dataHora = [671, 310, 180, 63, 16, 22, 190, 458, 812, 987, 1057, 1067, 1013, 830, 767, 1040, 887, 640, 806, 664, 309, 908, 1258, 1076];
-        const canvasHora = document.getElementById('mensajesHoraChart');
+            const maxCount = Math.max(...wordsData.map(d => d.count));
+            const colors = ['color-red', 'color-dark', 'color-pink', 'color-rose'];
+            
+            wordsData.slice(0, 20).forEach((item, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'word-tag';
+                
+                const intensity = item.count / maxCount;
+                let sizeClass = 'size-1';
+                if (intensity > 0.8) sizeClass = 'size-5';
+                else if (intensity > 0.6) sizeClass = 'size-4';
+                else if (intensity > 0.4) sizeClass = 'size-3';
+                else if (intensity > 0.2) sizeClass = 'size-2';
+                
+                const colorClass = colors[index % colors.length];
+                
+                tag.classList.add(sizeClass);
+                tag.classList.add(colorClass);
+                tag.textContent = item.word;
+                tag.title = `${item.word} - ${item.count} veces`;
+                container.appendChild(tag);
+            });
+        }
 
-        if (canvasHora) {
-            const ctxHora = canvasHora.getContext('2d');
+        // Charts
+        const monthLabels = ["2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"];
+        const dataA1 = [276, 1244, 1522, 1949, 1977, 2374, 216];
+        const dataA2 = [210, 916, 999, 1337, 1342, 1571, 98];
+        const hourData = [[109, 66, 19, 0, 0, 7, 38, 52, 130, 148, 175, 181, 138, 101, 93, 144, 118, 149, 159, 127, 52, 157, 127, 163], [55, 29, 7, 4, 9, 0, 39, 62, 104, 133, 181, 198, 187, 129, 71, 151, 153, 109, 122, 83, 41, 100, 221, 117], [116, 34, 4, 0, 0, 0, 45, 94, 96, 126, 169, 193, 267, 103, 60, 134, 125, 100, 73, 112, 91, 171, 218, 68], [67, 54, 12, 4, 0, 0, 14, 85, 145, 145, 187, 176, 107, 121, 140, 136, 175, 97, 135, 58, 24, 220, 70, 84], [75, 32, 19, 6, 0, 15, 21, 62, 114, 192, 171, 149, 122, 122, 119, 223, 135, 92, 108, 143, 6, 11, 237, 198], [119, 56, 63, 20, 7, 0, 30, 54, 142, 159, 67, 63, 77, 105, 205, 171, 85, 46, 144, 73, 64, 67, 300, 342], [130, 39, 56, 29, 0, 0, 3, 49, 81, 84, 107, 107, 115, 149, 79, 81, 96, 47, 65, 68, 31, 182, 85, 104]];
 
-            // Degradado vertical para las barras
-            const gradientHora = ctxHora.createLinearGradient(0, 0, 0, canvasHora.height || 200);
-            gradientHora.addColorStop(0, 'rgba(248, 113, 150, 0.95)');
-            gradientHora.addColorStop(1, 'rgba(244, 114, 182, 0.45)');
+        function renderChart() {
+            const ctx = document.getElementById('monthlyChart');
+            if (!ctx) return;
 
-            new Chart(ctxHora, {
+            new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labelsHora.map(h => h + ":00"),
-                    datasets: [{
-                        label: 'Mensajes por hora',
-                        data: dataHora,
-                        backgroundColor: gradientHora,
-                        hoverBackgroundColor: gradientHora,
-                        borderWidth: 0,
-                        maxBarThickness: 26
-                    }]
+                    labels: monthLabels.map(m => {
+                        const [y, mo] = m.split('-');
+                        const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                        return `${months[parseInt(mo) - 1]} '${y.slice(2)}`;
+                    }),
+                    datasets: [
+                        {
+                            label: 'Sebas',
+                            data: dataA1,
+                            backgroundColor: 'rgba(196, 30, 58, 0.8)',
+                            borderRadius: 6,
+                            borderSkipped: false
+                        },
+                        {
+                            label: 'Rena',
+                            data: dataA2,
+                            backgroundColor: 'rgba(74, 74, 74, 0.5)',
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                title: function(items) {
-                                    return 'Hora: ' + items[0].label;
-                                },
-                                label: function(item) {
-                                    return 'Mensajes: ' + item.formattedValue;
-                                }
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: { family: "'Source Sans 3', sans-serif" }
                             }
                         }
                     },
                     scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: {
-                                maxRotation: 0,
-                                autoSkip: true,
-                                autoSkipPadding: 8
-                            }
-                        },
                         y: {
                             beginAtZero: true,
-                            ticks: { precision: 0 },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.35)',
-                                drawBorder: false
-                            }
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: { font: { family: "'Source Sans 3', sans-serif" } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: "'Source Sans 3', sans-serif" } }
                         }
-                    },
-                    layout: {
-                        padding: { top: 8, right: 4, bottom: 0, left: 0 }
                     }
                 }
             });
         }
 
+        function renderHeatmap() {
+            const container = document.getElementById('heatmapContainer');
+            if (!container || !hourData) return;
 
-
-        // Nube de palabras
-        const wordsData = [{"word": "omitido", "count": 4808}, {"word": "audio", "count": 3356}, {"word": "amor", "count": 3243}, {"word": "vida", "count": 1985}, {"word": "sticker", "count": 1427}, {"word": "omitida", "count": 1207}, {"word": "imagen", "count": 1205}, {"word": "amo", "count": 1168}, {"word": "mucho", "count": 1101}, {"word": "todo", "count": 874}, {"word": "estoy", "count": 513}, {"word": "usted", "count": 482}, {"word": "gracias", "count": 481}, {"word": "guapo", "count": 446}, {"word": "amorcito", "count": 420}, {"word": "cómo", "count": 412}, {"word": "mejor", "count": 343}, {"word": "hoy", "count": 342}, {"word": "hermosa", "count": 307}, {"word": "voy", "count": 285}, {"word": "trabajo", "count": 280}, {"word": "espero", "count": 274}, {"word": "días", "count": 273}, {"word": "día", "count": 269}, {"word": "quiero", "count": 255}, {"word": "buenos", "count": 244}, {"word": "guapa", "count": 239}, {"word": "alegro", "count": 235}, {"word": "corazón", "count": 235}, {"word": "mundo", "count": 233}, {"word": "tengo", "count": 232}, {"word": "mujer", "count": 221}, {"word": "vaya", "count": 220}, {"word": "novia", "count": 214}, {"word": "mañana", "count": 212}, {"word": "nos", "count": 207}, {"word": "estás", "count": 202}, {"word": "mío", "count": 185}, {"word": "amaneció", "count": 177}, {"word": "así", "count": 167}, {"word": "ver", "count": 163}, {"word": "respondo", "count": 161}, {"word": "princesa", "count": 152}, {"word": "preciosa", "count": 150}, {"word": "detallista", "count": 150}, {"word": "inteligente", "count": 149}, {"word": "ahora", "count": 143}, {"word": "vemos", "count": 141}, {"word": "algo", "count": 140}, {"word": "llamar", "count": 135}];
-        (function() {
-            const container = document.getElementById("wordcloud");
-            const width = container.clientWidth;
-            const height = 400;
-
-            if (!wordsData || wordsData.length === 0) return;
-
-            const maxCount = Math.max.apply(null, wordsData.map(d => d.count));
-
-            const layout = d3.layout.cloud()
-                .size([width, height])
-                .words(wordsData.map(d => ({
-                    text: d.word,
-                    count: d.count,
-                    size: 14 + (d.count / maxCount) * 30
-                })))
-                .padding(4)
-                .rotate(() => 0)
-                .font("Arial")
-                .fontSize(d => d.size)
-                .on("end", draw);
-
-            layout.start();
-
-            function draw(words) {
-                const svg = d3.select("#wordcloud")
-                    .append("svg")
-                    .attr("width", width)
-                    .attr("height", height);
-
-                const group = svg.append("g")
-                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-                group.selectAll("text")
-                    .data(words)
-                    .enter().append("text")
-                    .style("font-size", d => d.size + "px")
-                    .style("fill", d => {
-                            const max = Math.max(...words.map(w => w.count));
-                            const intensity = d.count / max;
-                            // De rosa suave a rojo fuerte
-                            return d3.interpolateRgb("#fbb6ce", "#9b1c31")(intensity);
-                        })
-                    .attr("text-anchor", "middle")
-                    .attr("transform", d => "translate(" + [d.x, d.y] + ")")
-                    .text(d => d.text)
-                    .on("mouseover", function(event, d) {
-                        let tooltip = document.getElementById("tooltip");
-                        if (!tooltip) {
-                            tooltip = document.createElement("div");
-                            tooltip.id = "tooltip";
-                            tooltip.style.position = "fixed";
-                            tooltip.style.background = "white";
-                            tooltip.style.border = "1px solid #aaa";
-                            tooltip.style.padding = "6px";
-                            tooltip.style.borderRadius = "6px";
-                            tooltip.style.boxShadow = "0 2px 5px rgba(0,0,0,.2)";
-                            tooltip.style.fontSize = "0.85rem";
-                            document.body.appendChild(tooltip);
-                        }
-                        tooltip.innerText = d.text + ": " + d.count + " veces";
-                        tooltip.style.display = "block";
-                    })
-                    .on("mousemove", function(event) {
-                        const tooltip = document.getElementById("tooltip");
-                        if (!tooltip) return;
-                        tooltip.style.left = (event.pageX + 10) + "px";
-                        tooltip.style.top = (event.pageY + 10) + "px";
-                    })
-                    .on("mouseout", function() {
-                        const tooltip = document.getElementById("tooltip");
-                        if (tooltip) tooltip.style.display = "none";
-                    });
+            const days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+            const maxCount = Math.max(...hourData.flat());
+            
+            let html = '<div></div>';
+            for (let h = 0; h < 24; h++) {
+                const label = h < 10 ? `0${h}` : h.toString();
+                html += `<div class="heatmap-label" style="writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);">${label}h</div>`;
             }
-        })();
-    </script>
-    <script>
-        window.addEventListener("load", function() {
-            const splash = document.getElementById("splash");
-            splash.style.opacity = 1;
+            
+            days.forEach((day, dayIndex) => {
+                html += `<div class="heatmap-label">${day}</div>`;
+                for (let h = 0; h < 24; h++) {
+                    const count = hourData[dayIndex][h];
+                    const intensity = count / maxCount;
+                    let opacity = 0.1;
+                    if (intensity > 0.7) opacity = 0.9;
+                    else if (intensity > 0.5) opacity = 0.7;
+                    else if (intensity > 0.3) opacity = 0.5;
+                    else if (intensity > 0.1) opacity = 0.3;
+                    
+                    html += `<div class="heatmap-cell" style="background: rgba(196, 30, 58, ${opacity});" title="${days[dayIndex]} ${h}:00 - ${count} msgs"></div>`;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
 
+        // Letter toggle
+        const letterBtn = document.getElementById('letterBtn');
+        const letterContent = document.getElementById('letterContent');
+        const letterClose = document.getElementById('letterClose');
+
+        if (letterBtn && letterContent) {
+            letterBtn.addEventListener('click', () => {
+                letterContent.classList.add('visible');
+                letterBtn.style.display = 'none';
+            });
+        }
+
+        if (letterClose && letterContent) {
+            letterClose.addEventListener('click', () => {
+                letterContent.classList.remove('visible');
+                letterBtn.style.display = 'block';
+            });
+        }
+
+        // Scroll animations
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Splash
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                splash.style.transition = "opacity 0.6s ease";
-                splash.style.opacity = 0;
-
-                setTimeout(() => {
-                    splash.style.display = "none";
-                }, 600);
-            }, 800); // tiempo que el corazón se ve antes de desvanecerse
+                document.getElementById('splash').classList.add('hidden');
+            }, 2000);
         });
-        </script>
 
+        // Init
+        renderTimeline();
+        renderWordsCloud();
+        renderChart();
+        renderHeatmap();
+        renderAmorometro();
+    </script>
 </body>
 </html>

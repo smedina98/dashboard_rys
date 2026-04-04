@@ -19,11 +19,9 @@ import json
 # -------------------------------------------------
 
 MESSAGE_REGEX = re.compile(
-    r'^(\d{1,2}/\d{1,2}/\d{2,4})\s+'
-    r'(\d{1,2}:\d{2})\s*'
-    r'([ap]\.?[\s\u202f]*m\.?)\s+-\s+'
-    r'([^:]+):\s+(.*)$',
-    re.IGNORECASE
+    r'^\[(\d{1,2}/\d{1,2}/\d{2,4}),\s+'
+    r'(\d{1,2}:\d{2}:\d{2})\]\s+'
+    r'([^:]+):\s+(.*)$'
 )
 
 # -------------------------------------------------
@@ -38,16 +36,19 @@ def parse_chat(file_path):
         for raw_line in f:
             line = raw_line.rstrip("\n")
 
+            # limpiar caracteres invisibles de WhatsApp
+            line = line.replace("\u200e", "").strip()
+
             m = MESSAGE_REGEX.match(line)
             if m:
                 # guardar el anterior
                 if current:
                     messages.append(current)
 
-                date_str, time_str, ampm, author, text = m.groups()
-                dt_str = f"{date_str} {time_str} {ampm}"
+                date_str, time_str, author, text = m.groups()
 
                 try:
+                    dt_str = f"{date_str} {time_str}"
                     dt = date_parser.parse(dt_str, dayfirst=True)
                 except Exception:
                     dt = None
@@ -124,22 +125,7 @@ def basic_stats(messages):
         "top_weekday": top_weekday,
     }
 
-# -------------------------------------------------
-# MÉTRICAS DE MULTIMEDIA: AUDIOS, FOTOS, VIDEOS
-# -------------------------------------------------
-
 def media_stats(messages):
-    """
-    Detecta archivos multimedia:
-    - Audios: .opus, .ogg, .m4a
-    - Fotos: .jpg, .jpeg, .png, .gif
-    - Videos: .mp4, .mov
-    Además cuenta "<Multimedia omitido>" como genérico
-    """
-    audio_ext = (".opus", ".ogg", ".m4a")
-    photo_ext = (".jpg", ".jpeg", ".png", ".gif")
-    video_ext = (".mp4", ".mov")
-
     counts = {
         "audio_total": 0,
         "photo_total": 0,
@@ -155,38 +141,41 @@ def media_stats(messages):
         text = m["text"].lower()
         author = m["author"]
 
-        # mensajes tipo "<Se omitió el mensaje de voz ...>"
-        if "mensaje de voz" in text:
+        # limpiar caracteres invisibles
+        text = text.replace("\u200e", "").strip()
+
+        # -------------------
+        # AUDIOS
+        # -------------------
+        if "audio omitido" in text or "audio omitted" in text:
             counts["audio_total"] += 1
             counts["audio_by_author"][author] += 1
             continue
 
-        # "<Multimedia omitido>" sin más
-        if "<multimedia omitido>" in text:
-            counts["other_total"] += 1
-            counts["other_by_author"][author] += 1
+        # -------------------
+        # IMÁGENES
+        # -------------------
+        if "imagen omitida" in text or "image omitted" in text:
+            counts["photo_total"] += 1
+            counts["photo_by_author"][author] += 1
             continue
 
-        # nombres de archivo tipo PTT-..., IMG-..., VID-...
-        match = re.search(r"([a-z0-9_\-]+\.[a-z0-9]+)", text)
-        if match:
-            filename = match.group(1)
+        # -------------------
+        # VIDEOS
+        # -------------------
+        if "video omitido" in text or "video omitted" in text:
+            counts["video_total"] += 1
+            counts["video_by_author"][author] += 1
+            continue
 
-            if filename.endswith(audio_ext):
-                counts["audio_total"] += 1
-                counts["audio_by_author"][author] += 1
-            elif filename.endswith(photo_ext):
-                counts["photo_total"] += 1
-                counts["photo_by_author"][author] += 1
-            elif filename.endswith(video_ext):
-                counts["video_total"] += 1
-                counts["video_by_author"][author] += 1
-            else:
-                counts["other_total"] += 1
-                counts["other_by_author"][author] += 1
+        # -------------------
+        # OTROS
+        # -------------------
+        if "multimedia omitido" in text or "media omitted" in text:
+            counts["other_total"] += 1
+            counts["other_by_author"][author] += 1
 
     return counts
-
 # -------------------------------------------------
 # MÉTRICAS ROMÁNTICAS
 # -------------------------------------------------
@@ -1648,15 +1637,15 @@ footer {
             <p class="carta-saludo">Querida Rena,</p>
 
             <p id="carta-texto">
-Gracias por llegar a mi vida y transformarla de una manera tan bonita y tan real. Desde que estás en ella, mis días tienen más luz, más sentido y más sonrisas que nacen sin esfuerzo.
+No sé en qué momento todo empezó a sentirse diferente, pero desde que llegaste, algo en mí cambió para bien. Mi mundo se volvió más tranquilo, más bonito, más lleno de sentido… y todo eso tiene tu nombre.
 
-Este detalle es sencillo, pero está hecho con todo el amor que siento por ti, con cada pensamiento bonito que me provocas y con cada latido que lleva tu nombre. Gracias por todo lo que eres y por todo lo que aportas a mi mundo, por tu forma de querer, por tu manera de escuchar y por la tranquilidad que me regalas solo con estar.
+A veces me quedo pensando en lo afortunado que soy de tenerte, porque no solo eres mi novia, eres ese lugar donde encuentro paz, donde puedo ser yo sin miedo y donde todo se siente correcto. Tu forma de ser, de querer, de entender… todo en ti suma a mi vida de una manera que no puedo explicar del todo, pero que siento profundamente.
 
-Contigo he aprendido que la felicidad se esconde en los pequeños momentos: en las risas compartidas, en las conversaciones largas, en los silencios cómodos y en la paz que siento cuando estás cerca. Estar contigo me acomoda el alma, me da calma y me recuerda que el amor verdadero se siente como hogar.
+No necesito grandes momentos para saber que soy feliz contigo. Me basta con una conversación contigo, con una risa, con tu compañía en silencio… porque incluso en lo simple, contigo todo se vuelve especial.
 
-Te amo muchísimo, más de lo que a veces las palabras pueden explicar. Amo quién eres, cómo eres y todo lo que compartimos. Mi Renata Valentina, mi novia, mi todo, gracias por elegirme, por acompañarme y por caminar conmigo.
+Quiero que sepas que te amo de verdad, con todo lo que soy. Amo tu esencia, tu forma de ver la vida y la manera en la que haces que todo sea más fácil y más bonito para mí.
 
-Gracias por ser tú, por existir y por hacer mi vida más bonita solo siendo parte de ella.
+Renata Valentina, gracias por estar, por quedarte, por elegirme cada día. Eres una parte fundamental de mi vida, y sinceramente, no la imagino sin ti.
             </p>
 
             <p class="carta-firma">

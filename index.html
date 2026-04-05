@@ -565,25 +565,26 @@
         .counter-grid {
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            align-items: center;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
         .counter-item {
             text-align: center;
-            min-width: 100px;
+            min-width: 70px;
         }
 
         .counter-number {
             font-family: 'Playfair Display', serif;
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 600;
             color: var(--accent-red);
             line-height: 1;
         }
 
         .counter-label {
-            font-size: 0.85rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -592,11 +593,38 @@
 
         .counter-divider {
             font-family: 'Playfair Display', serif;
-            font-size: 3rem;
+            font-size: 2rem;
             color: var(--accent-red);
             opacity: 0.5;
             align-self: center;
             padding-bottom: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .counter-grid {
+                gap: 0.5rem;
+            }
+
+            .counter-item {
+                min-width: 50px;
+            }
+
+            .counter-number {
+                font-size: 2rem;
+            }
+
+            .counter-label {
+                font-size: 0.6rem;
+            }
+
+            .counter-divider {
+                font-size: 1.5rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .counter-subtitle {
+                font-size: 0.9rem;
+            }
         }
 
         /* ========== WORDS ELEGANT ========== */
@@ -1608,31 +1636,31 @@ Mi princesa 😘, gracias por la velada siempre maravillosas pero la de hoy muy 
             <div class="photo-carousel" id="photoCarousel">
                 <div class="carousel-track" id="carouselTrack">
                     <div class="carousel-slide">
-                        <img src="img/img1.jpeg" alt="Foto 1" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img1.jpeg" alt="Foto 1" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img2.jpeg" alt="Foto 2" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img2.jpeg" alt="Foto 2" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img3.jpeg" alt="Foto 3" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img3.jpeg" alt="Foto 3" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img4.jpeg" alt="Foto 4" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img4.jpeg" alt="Foto 4" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img5.jpeg" alt="Foto 5" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img5.jpeg" alt="Foto 5" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img6.jpeg" alt="Foto 6" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img6.jpeg" alt="Foto 6" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img7.jpeg" alt="Foto 7" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img7.jpeg" alt="Foto 7" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img8.jpeg" alt="Foto 8" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img8.jpeg" alt="Foto 8" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/img9.jpeg" alt="Foto 9" onerror="this.parentElement.style.display='none'">
+                        <img src="img/img9.jpeg" alt="Foto 9" loading="lazy" onerror="this.parentElement.style.display='none'">
                     </div>
                 </div>
                 <button class="carousel-nav prev" id="carouselPrev">

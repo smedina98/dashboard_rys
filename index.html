@@ -238,10 +238,17 @@
             color: var(--text-muted);
         }
 
+        .section-divider {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            color: var(--accent-red);
+            opacity: 0.5;
+        }
+
         /* ========== TIMELINE JOURNEY ========== */
         .timeline-section {
             padding: 4rem 2rem;
-            background: var(--bg-secondary);
+            background: var(--bg-primary);
         }
 
         .timeline-journey {
@@ -426,7 +433,7 @@
         /* ========== SPOTIFY ========== */
         .spotify-section {
             padding: 4rem 2rem 6rem;
-            background: var(--bg-secondary);
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
         }
 
         .spotify-container {
@@ -445,48 +452,151 @@
         /* ========== PHOTO SECTION ========== */
         .photo-section {
             padding: 4rem 2rem;
+            background: var(--bg-primary);
         }
 
         .photo-container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
-        .photo-frame {
+        .photo-carousel {
             position: relative;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            background: var(--bg-primary);
         }
 
-        .photo-img {
+        .carousel-track {
+            position: relative;
+        }
+
+        .carousel-slide {
+            display: none;
             width: 100%;
-            height: auto;
+        }
+
+        .carousel-slide.active {
             display: block;
         }
 
-        .photo-placeholder {
-            padding: 4rem 2rem;
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 20px;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .carousel-nav.prev { left: 20px; }
+        .carousel-nav.next { right: 20px; }
+
+        .carousel-nav svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-primary);
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 1rem;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--accent-red);
+            transform: scale(1.2);
+        }
+
+        /* ========== COUPLE COUNTER ========== */
+        .counter-section {
+            background: var(--bg-primary);
+            padding: 6rem 2rem;
+        }
+
+        .counter-container {
             text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .counter-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-style: italic;
             color: var(--text-muted);
+            margin-bottom: 2.5rem;
         }
 
-        .photo-placeholder svg {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        .counter-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
         }
 
-        .photo-placeholder p {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
+        .counter-item {
+            text-align: center;
+            min-width: 100px;
         }
 
-        .photo-hint {
+        .counter-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            line-height: 1;
+        }
+
+        .counter-label {
             font-size: 0.85rem;
-            opacity: 0.7;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        .counter-divider {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--accent-red);
+            opacity: 0.5;
+            align-self: center;
+            padding-bottom: 1rem;
         }
 
         /* ========== WORDS ELEGANT ========== */
@@ -841,125 +951,60 @@
             border-radius: 2px;
         }
 
-        /* ========== AMOROMETRO ========== */
-        .amorometro-section {
-            background: var(--bg-primary);
-            padding: 6rem 2rem;
-        }
-
-        .amorometro-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .amorometro-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .amorometro-item:hover {
-            transform: translateX(8px);
-            box-shadow: 0 4px 20px rgba(196, 30, 58, 0.1);
-        }
-
-        .amorometro-emoji {
-            min-width: 50px;
-            text-align: center;
-        }
-
-        .amorometro-icon-only {
-            font-size: 1.6rem;
-        }
-
-        .amorometro-content {
-            flex: 1;
-        }
-
-        .amorometro-word {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            color: var(--text-primary);
-        }
-
-        .amorometro-bar-container {
-            width: 100%;
-            height: 6px;
-            background: rgba(0,0,0,0.05);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-
-        .amorometro-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-red), #e63950);
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-
-        .amorometro-count {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--accent-red);
-            min-width: 70px;
-            text-align: right;
-        }
-
         /* ========== FIRST MOMENTS ========== */
         .first-moments-section {
-            background: var(--bg-secondary);
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
             padding: 6rem 2rem;
         }
 
         .first-moments-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
             max-width: 900px;
             margin: 0 auto;
         }
 
         .first-moment-card {
-            background: var(--bg-primary);
-            border-radius: 20px;
-            padding: 2.5rem;
+            background: white;
+            border-radius: 24px;
+            padding: 3rem 2rem;
             text-align: center;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(196, 30, 58, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
+        }
+
+        .first-moment-card:first-child {
+            border-color: rgba(196, 30, 58, 0.15);
+        }
+
+        .first-moment-card:last-child {
+            border-color: rgba(230, 57, 80, 0.15);
         }
 
         .first-moment-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(196, 30, 58, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(196, 30, 58, 0.15);
         }
 
         .first-moment-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
         }
 
         .first-moment-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .first-moment-author {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             color: var(--accent-red);
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
@@ -1392,6 +1437,7 @@
         <div class="section-header">
             <h2 class="section-title">Nuestra Línea de Tiempo</h2>
             <p class="section-subtitle">Los momentos que marcaron nuestra historia</p>
+            <div class="section-divider">&#10084;&#65039;</div>
         </div>
         <div class="timeline-journey">
             <div class="timeline-path"></div>
@@ -1404,6 +1450,7 @@
         <div class="section-header">
             <h2 class="section-title">Los Primeros "Te Quiero" y "Te Amo"</h2>
             <p class="section-subtitle">Los momentos que marcaron el inicio de nuestro amor</p>
+            <div class="section-divider">&#10084;&#65039;</div>
         </div>
         <div class="first-moments-grid">
             <div class="first-moment-card">
@@ -1520,15 +1567,81 @@ Mi princesa 😘, gracias por la velada siempre maravillosas pero la de hoy muy 
         </div>
     </section>
 
+    <!-- COUPLE COUNTER -->
+    <section class="counter-section">
+        <div class="section-header">
+            <h2 class="section-title">Tiempo Juntos</h2>
+        </div>
+        <div class="counter-container">
+            <p class="counter-subtitle">Novios desde el 13 de noviembre de 2025 a las 11:00 PM</p>
+            <div class="counter-grid">
+                <div class="counter-item">
+                    <div class="counter-number" id="counterDays">0</div>
+                    <div class="counter-label">Días</div>
+                </div>
+                <div class="counter-divider">:</div>
+                <div class="counter-item">
+                    <div class="counter-number" id="counterHours">0</div>
+                    <div class="counter-label">Horas</div>
+                </div>
+                <div class="counter-divider">:</div>
+                <div class="counter-item">
+                    <div class="counter-number" id="counterMinutes">0</div>
+                    <div class="counter-label">Minutos</div>
+                </div>
+                <div class="counter-divider">:</div>
+                <div class="counter-item">
+                    <div class="counter-number" id="counterSeconds">0</div>
+                    <div class="counter-label">Segundos</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- PHOTO SECTION -->
     <section class="photo-section">
         <div class="section-header">
-            <h2 class="section-title">Nuestro Momento</h2>
-            <p class="section-subtitle">Un recuerdo para siempre</p>
+            <h2 class="section-title">Nuestros Recuerdos</h2>
+            <p class="section-subtitle">Los momentos que atesoramos</p>
         </div>
         <div class="photo-container">
-            <div class="photo-frame">
-                <img src="foto.jpeg" alt="Nuestra foto" class="photo-img" id="couplePhoto">
+            <div class="photo-carousel" id="photoCarousel">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide">
+                        <img src="img/img1.jpeg" alt="Foto 1" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img2.jpeg" alt="Foto 2" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img3.jpeg" alt="Foto 3" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img4.jpeg" alt="Foto 4" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img5.jpeg" alt="Foto 5" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img6.jpeg" alt="Foto 6" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img7.jpeg" alt="Foto 7" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img8.jpeg" alt="Foto 8" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/img9.jpeg" alt="Foto 9" onerror="this.parentElement.style.display='none'">
+                    </div>
+                </div>
+                <button class="carousel-nav prev" id="carouselPrev">
+                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <button class="carousel-nav next" id="carouselNext">
+                    <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+                </button>
+                <div class="carousel-dots" id="carouselDots"></div>
             </div>
         </div>
     </section>
@@ -1652,55 +1765,6 @@ Te amo. Hoy, mañana, y en todos los mensajes que faltan por venir.
 
         // Words cloud
         const wordsData = [{"word": "amor", "count": 3243}, {"word": "vida", "count": 1985}, {"word": "amo", "count": 1168}, {"word": "mucho", "count": 1101}, {"word": "guapo", "count": 446}, {"word": "amorcito", "count": 420}, {"word": "mejor", "count": 343}, {"word": "trabajo", "count": 280}, {"word": "espero", "count": 274}, {"word": "días", "count": 273}, {"word": "día", "count": 269}, {"word": "buenos", "count": 244}, {"word": "guapa", "count": 239}, {"word": "alegro", "count": 235}, {"word": "corazón", "count": 235}, {"word": "mundo", "count": 233}, {"word": "mujer", "count": 221}, {"word": "vaya", "count": 220}, {"word": "novia", "count": 214}, {"word": "nos", "count": 207}, {"word": "estás", "count": 202}, {"word": "mío", "count": 185}, {"word": "amaneció", "count": 177}, {"word": "princesa", "count": 152}, {"word": "preciosa", "count": 150}];
-        const loveWordsData = {"🥺": 450, "😘": 2770, "😍": 557, "💖": 70, "le quiero": 54, "te quiero": 59, "❤️": 460, "mi amor": 847, "te amo": 1040, "le amo": 81, "💕": 1};
-        
-        function renderAmorometro() {
-            const container = document.getElementById('amorometroGrid');
-            if (!container || !loveWordsData) return;
-
-            const sortedWords = Object.entries(loveWordsData)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 12);
-
-            const maxCount = sortedWords[0] ? sortedWords[0][1] : 1;
-
-            sortedWords.forEach(([word, count]) => {
-                const item = document.createElement('div');
-                item.className = 'amorometro-item';
-
-                const isEmoji = /[\u{1F300}-\u{1F9FF}]/u.test(word);
-                let displayIcon, displayWord;
-                
-                if (isEmoji) {
-                    displayIcon = `<span class="amorometro-icon-only">${word}</span>`;
-                    displayWord = word;
-                } else {
-                    const wordEmojis = {
-                        'amor': '💕',
-                        'te amo': '❤️',
-                        'le amo': '❤️‍🔥',
-                        'te quiero': '💗',
-                        'le quiero': '💗',
-                        'mi amor': '💖',
-                        'te extraño': '🥺'
-                    };
-                    displayIcon = `<span class="amorometro-icon-only">${wordEmojis[word.toLowerCase()] || '✨'}</span>`;
-                    displayWord = word;
-                }
-                
-                item.innerHTML = `
-                    <div class="amorometro-emoji">${displayIcon}</div>
-                    <div class="amorometro-content">
-                        <div class="amorometro-word">${displayWord}</div>
-                        <div class="amorometro-bar-container">
-                            <div class="amorometro-bar" style="width: ${(count / maxCount) * 100}%"></div>
-                        </div>
-                    </div>
-                    <div class="amorometro-count">${count}</div>
-                `;
-                container.appendChild(item);
-            });
-        }
         
         function renderWordsCloud() {
             const container = document.getElementById('wordsCloud');
@@ -1862,12 +1926,119 @@ Te amo. Hoy, mañana, y en todos los mensajes que faltan por venir.
             }, 2000);
         });
 
+        // Couple Counter
+        function updateCounter() {
+            const startDate = new Date('2025-11-13T23:00:00');
+            const now = new Date();
+            const diff = now - startDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('counterDays').textContent = days;
+            document.getElementById('counterHours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('counterMinutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('counterSeconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        // Photo Carousel
+        function initCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const dotsContainer = document.getElementById('carouselDots');
+            const prevBtn = document.getElementById('carouselPrev');
+            const nextBtn = document.getElementById('carouselNext');
+            
+            if (!track) return;
+
+            const allSlides = track.querySelectorAll('.carousel-slide');
+            let currentIndex = 0;
+            let slides = [];
+
+            allSlides.forEach((slide, i) => {
+                const img = slide.querySelector('img');
+                img.addEventListener('error', () => {
+                    slide.style.display = 'none';
+                });
+                img.addEventListener('load', () => {
+                    if (slide.style.display !== 'none' && !slides.includes(slide)) {
+                        slides.push(slide);
+                        if (slides.length === 1) {
+                            slide.classList.add('active');
+                        }
+                        createDots();
+                    }
+                });
+                if (img.complete && img.naturalWidth > 0) {
+                    if (!slides.includes(slide)) {
+                        slides.push(slide);
+                        if (slides.length === 1) {
+                            slide.classList.add('active');
+                        }
+                        createDots();
+                    }
+                }
+            });
+
+            function createDots() {
+                dotsContainer.innerHTML = '';
+                slides.forEach((_, index) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => goToSlide(index));
+                    dotsContainer.appendChild(dot);
+                });
+            }
+
+            function updateCarousel() {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === currentIndex);
+                });
+                document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+            }
+
+            function goToSlide(index) {
+                currentIndex = index;
+                updateCarousel();
+            }
+
+            function nextSlide() {
+                if (slides.length > 1) {
+                    currentIndex = (currentIndex + 1) % slides.length;
+                    updateCarousel();
+                }
+            }
+
+            function prevSlide() {
+                if (slides.length > 1) {
+                    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                    updateCarousel();
+                }
+            }
+
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+
+            setTimeout(() => {
+                if (slides.length <= 1) {
+                    document.querySelectorAll('.carousel-nav').forEach(n => n.style.display = 'none');
+                    dotsContainer.style.display = 'none';
+                }
+            }, 500);
+        }
+
         // Init
         renderTimeline();
         renderWordsCloud();
         renderChart();
         renderHeatmap();
-        renderAmorometro();
+        initCarousel();
     </script>
 </body>
 </html>

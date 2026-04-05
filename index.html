@@ -1636,31 +1636,31 @@ Mi princesa 😘, gracias por la velada siempre maravillosas pero la de hoy muy 
             <div class="photo-carousel" id="photoCarousel">
                 <div class="carousel-track" id="carouselTrack">
                     <div class="carousel-slide">
-                        <img src="img/webp/img1.webp" alt="Foto 1" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img1.webp" alt="Foto 1">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img2.webp" alt="Foto 2" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img2.webp" alt="Foto 2">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img3.webp" alt="Foto 3" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img3.webp" alt="Foto 3">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img4.webp" alt="Foto 4" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img4.webp" alt="Foto 4">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img5.webp" alt="Foto 5" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img5.webp" alt="Foto 5">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img6.webp" alt="Foto 6" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img6.webp" alt="Foto 6">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img7.webp" alt="Foto 7" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img7.webp" alt="Foto 7">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img8.webp" alt="Foto 8" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img8.webp" alt="Foto 8">
                     </div>
                     <div class="carousel-slide">
-                        <img src="img/webp/img9.webp" alt="Foto 9" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="img/webp/img9.webp" alt="Foto 9">
                     </div>
                 </div>
                 <button class="carousel-nav prev" id="carouselPrev">
@@ -1983,51 +1983,27 @@ Te amo. Hoy, mañana, y en todos los mensajes que faltan por venir.
             
             if (!track) return;
 
-            const allSlides = track.querySelectorAll('.carousel-slide');
+            const allSlides = Array.from(track.querySelectorAll('.carousel-slide'));
+            let slides = allSlides.filter(s => s.querySelector('img').src !== '');
             let currentIndex = 0;
-            let slides = [];
 
-            allSlides.forEach((slide, i) => {
-                const img = slide.querySelector('img');
-                img.addEventListener('error', () => {
-                    slide.style.display = 'none';
-                });
-                img.addEventListener('load', () => {
-                    if (slide.style.display !== 'none' && !slides.includes(slide)) {
-                        slides.push(slide);
-                        if (slides.length === 1) {
-                            slide.classList.add('active');
-                        }
-                        createDots();
-                    }
-                });
-                if (img.complete && img.naturalWidth > 0) {
-                    if (!slides.includes(slide)) {
-                        slides.push(slide);
-                        if (slides.length === 1) {
-                            slide.classList.add('active');
-                        }
-                        createDots();
-                    }
-                }
+            if (slides.length === 0) return;
+
+            slides[0].classList.add('active');
+
+            slides.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
             });
-
-            function createDots() {
-                dotsContainer.innerHTML = '';
-                slides.forEach((_, index) => {
-                    const dot = document.createElement('button');
-                    dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
-                    dot.addEventListener('click', () => goToSlide(index));
-                    dotsContainer.appendChild(dot);
-                });
-            }
 
             function updateCarousel() {
                 slides.forEach((slide, i) => {
                     slide.classList.toggle('active', i === currentIndex);
                 });
-                document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentIndex);
+                document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
                 });
             }
 
@@ -2037,28 +2013,23 @@ Te amo. Hoy, mañana, y en todos los mensajes que faltan por venir.
             }
 
             function nextSlide() {
-                if (slides.length > 1) {
-                    currentIndex = (currentIndex + 1) % slides.length;
-                    updateCarousel();
-                }
+                currentIndex = (currentIndex + 1) % slides.length;
+                updateCarousel();
             }
 
             function prevSlide() {
-                if (slides.length > 1) {
-                    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-                    updateCarousel();
-                }
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                updateCarousel();
             }
 
             if (nextBtn) nextBtn.addEventListener('click', nextSlide);
             if (prevBtn) prevBtn.addEventListener('click', prevSlide);
 
-            setTimeout(() => {
-                if (slides.length <= 1) {
-                    document.querySelectorAll('.carousel-nav').forEach(n => n.style.display = 'none');
-                    dotsContainer.style.display = 'none';
-                }
-            }, 500);
+            if (slides.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            }
         }
 
         // Init
